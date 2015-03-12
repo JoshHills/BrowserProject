@@ -1,8 +1,5 @@
-import java.awt.Component;
 import java.net.URL;
-
 import javax.swing.Icon;
-import javax.swing.JLabel;
 
 /**
  * @author Josh Hills

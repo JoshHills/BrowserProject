@@ -5,26 +5,14 @@ import java.util.Map;
  * @author Josh Hills
  * @version 1.1
  * 
- * This class manages the 'Bookmark' objects relating to the browser.
+ * This class manages the operations relating to the 'Bookmark' objects of the browser.
  */
 public class BookmarksManager {
 	
 	// Collection of users' bookmarks.
 	private Map<String, Bookmark> bookmarks = new HashMap<String, Bookmark>();
 	
-	
-	// Component models custom tool-bar to display collection of 'Bookmark' objects.
-	
-	
-	/**
-	 * Constructor assembles bar itself from the load of configuration file.
-	 */
-	public BookmarksManager() {
-	
-		// Load from setup.
 		
-	}
-	
 	/**
 	 * Display a page with information about the state of the browser's 'bookmarks'.
 	 */

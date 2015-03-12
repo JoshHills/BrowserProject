@@ -1,3 +1,5 @@
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,9 @@ public class Window {
 	// Main component to be styled and modified.
 	private JFrame frame;
 	
+	// Declare a Layout Manager for fine-tuned positioning of inner components.
+	private BorderLayout bl;
+	
 	/* Nested components. */
 	
 	// Instance of browser's 'ribbon' for this window.
@@ -22,8 +27,8 @@ public class Window {
 	// Instance of browser's bookmarks bar.
 	private BookmarkBar bmBar;
 	
-	// List of currently active tabs within window.
-	private List<Page> tabs = new ArrayList<Page>();
+	// Instance of browser's tab bar.
+	private TabBar tabBar;
 	
 	/**
 	 * Constructor sets-up window properties and adds the class' shortcut listener.
@@ -44,18 +49,36 @@ public class Window {
 		// Set the window's initial theme.
 		frame.getContentPane().setBackground(Browser.getInstance().getTheme());
 		
+		// Create layout.
+		bl = new BorderLayout();
+		// Set layout.
+		frame.setLayout(bl);
+		
 		/* Create child components and add them. */
+		
+		// Create ribbon (utility tool-bar).
+		ribbon = new Ribbon(this);
+		// Add ribbon to window.
+		frame.add(ribbon.getComponent(), BorderLayout.NORTH);
+		
+		// Create tab bar (manages tabs and pages).
+		tabBar = new TabBar(this);
+		// Add tab bar to window.
+		frame.add(tabBar.getComponent());
+		
 		
 		
 		// Add the keyboard shortcut listener.
 		
+		// Make the window visible post-initialisation.
+		frame.setVisible(true);
 		
 	}
 	
 	/**
 	 * Method returns the main component post-initialisation.
 	 * 
-	 * @return	JFrame component modelled after a browser window.
+	 * @return	Loaded JFrame component modelled after a browser window.
 	 */
 	public JFrame getComponent() {
 	
@@ -63,8 +86,15 @@ public class Window {
 		
 	}
 	
-	public List<Page> getTabs() {
-		return tabs;
+	/**
+	 * Method returns the tab bar component.
+	 * 
+	 * @return	This window's 'TabBar' instance.
+	 */
+	public TabBar getTabBar() {
+		
+		return tabBar;
+	
 	}
-
+	
 }

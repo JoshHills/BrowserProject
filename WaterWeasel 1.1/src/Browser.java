@@ -45,7 +45,7 @@ public class Browser {
 	// Overall browser theme.
 	private final Color DEFAULT_THEME = new Color(140,210,245);
 	// 'Homepage' loaded to first page.
-	private final URL DEFAULT_HOMEPAGE = makeURL(".Assets/Welcome.html");
+	private final URL DEFAULT_HOMEPAGE = makeURL(new File("./Assets/Welcome.html"));
 	
 	/* Global settings. */
 	
@@ -81,7 +81,6 @@ public class Browser {
 		
 		/* Create components! */
 		brws.windows.add(new Window());
-		brws.windows.get(0).getComponent().setVisible(true);
 		
 	}
 	
@@ -242,11 +241,35 @@ public class Browser {
 		}
 		
 	}
+	
+	/**
+	 * Overloaded method converts a File to an URL object. It is positioned
+	 * in this outer-most 'Browser' class for easy access, and serves to
+	 * remove boilerplate code when checking for exceptions.
+	 * 
+	 * @param string	File to attempt to convert to an URL.
+	 * @return			A new URL object if successful.
+	 */
+	public static URL makeURL(File file) {
+		
+		try {
+			// Attempt to return a new URL from the File.
+			return file.toURI().toURL();
+		} catch (java.net.MalformedURLException e) {
+			// Otherwise...
+			return null;
+		}
+		
+	}
 
 	/* Accessor methods. */
 	
 	public String getBROWSER_NAME() {
 		return BROWSER_NAME;
+	}
+	
+	public URL getDEFAULT_HOMEPAGE() {
+		return DEFAULT_HOMEPAGE;
 	}
 
 	public int getxSize() {

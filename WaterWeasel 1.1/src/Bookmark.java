@@ -16,7 +16,13 @@ public class Bookmark {
 	// Link location.
 	private URL url;
 	
-	// Constructor initialises private fields.
+	/**
+	 * Constructor initialises private fields.
+	 * 
+	 * @param ico	The graphic selected to represent the object.
+	 * @param name	The user-defined name of the object.
+	 * @param url	The URL the object points to.
+	 */
 	public Bookmark(Icon ico, String name, URL url) {
 		
 		this.ico = ico;

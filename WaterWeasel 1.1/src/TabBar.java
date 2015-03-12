@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 /**
  * @author Josh Hills
@@ -16,17 +18,22 @@ import javax.swing.JPanel;
  */
 public class TabBar {
 	
+	/* IMPORTANT NOTE: A USE FOR QUEUES COULD BE FOR TEMPORARY STORAGE OF CLOSED TABS. */
+	
 	// Parent reference.
 	private Window window;
 	
 	// Main component to be styled and modified.
-	private JPanel tabBar;
+	private JTabbedPane tabBar;
 	
 	// List of currently active pages within window.
-	private List<Page> pages = new ArrayList<Page>();	
+	private List<Page> pages = new ArrayList<Page>();
+	
+	// Store amount of open tabs.
+	private int openTabs = 0;
 	
 	/**
-	 * Constructor initialises 'tabBar' and calls 'refresh' method for first time.
+	 * Constructor initialises components.
 	 * 
 	 * @param window	Abstract container.
 	 */
@@ -35,41 +42,38 @@ public class TabBar {
 		// Set parent reference.
 		this.window = window;
 		// Instantiate.
-		tabBar = new JPanel();
-		// Apply relevant layout manager.
-		tabBar.setLayout(new FlowLayout(FlowLayout.LEFT));
+		tabBar = new JTabbedPane();
 		
-		// Call refresh to add and display components.
-		refresh();
+		// Add the first tab to display.
+		add();
 		
 	}
 
 	/**
-	 * Method creates a formatted JLabel from user bookmarks.
+	 * Method adds a new tab to the screen.
 	 */
-	public void refresh() {
+	public void add() {
 		
-		// Remove all existing components (some may have been removed or added since).
-		tabBar.removeAll();
+		pages.add(new Page());
 		
-		/* Produce a visual representation for each 'Page' object using Swing components. */
-		
-		// Create a temporary list of 'JButton's.
-		List<JButton> activeTabs = new ArrayList<JButton>();
-		
-		for(Page page : Browser.getInstance().getWindows().get(0).getTabs()) {
-			
-			activeTabs.add(new JButton("Tab" + (activeTabs.size() + 1)));
-			
-			
-		}
-		
+		tabBar.addTab("Tab " + pages.size(), pages.get(pages.size() - 1).getComponent());
+
+		openTabs++;
 		
 	}
 	
 	/* Accessor methods. */
 	
-	public List<Page> getTabs() {
+	/**
+	 * Method returns the main component post-initialisation.
+	 * 
+	 * @return	JTabbedPane component modelled after a browser page.
+	 */
+	public JTabbedPane getComponent() {
+		return tabBar;
+	}
+	
+	public List<Page> getPages() {
 		return pages;
 	}
 

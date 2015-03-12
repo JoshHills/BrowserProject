@@ -22,8 +22,8 @@ public class Page implements HyperlinkListener {
 	
 	// List of the page's visited URLs.
 	private List<URL> visited = new ArrayList<URL>();
-	// Integer for basic iteration.
-	private int index;
+	// Index integer for basic iteration.
+	private int index = 0;
 	
 	/**
 	 * Constructor sets-up page properties and adds a hyper-link listener.
@@ -60,7 +60,7 @@ public class Page implements HyperlinkListener {
 		if(type == HyperlinkEvent.EventType.ACTIVATED) {
 			
 			// If the event has been activated from within a frame in the page...
-			if(e instanceof HTMLFrameHyperlinkEvent) {
+			if(event instanceof HTMLFrameHyperlinkEvent) {
 				
 				// Cast it to a frame event.
 				HTMLFrameHyperlinkEvent frameEvent =
@@ -107,6 +107,8 @@ public class Page implements HyperlinkListener {
 			
 			// Log page in temporary history.
 			visited.add(url);
+			// Iterate index.
+			index++;
 			
 			//Update buttons.
 			
@@ -162,15 +164,16 @@ public class Page implements HyperlinkListener {
 	 * @return	JEditorPane component modelled after a browser page.
 	 */
 	public JEditorPane getComponent() {
-		
 		return page;
-		
 	}
 	
+	/**
+	 * Get the private index field.
+	 * 
+	 * @return	Index of currently active element of visited 'URL' list.
+	 */
 	public int getIndex() {
-		
 		return index;
-		
 	}
 
 }

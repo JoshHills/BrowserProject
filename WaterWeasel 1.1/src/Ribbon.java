@@ -1,4 +1,10 @@
-import javax.swing.JLabel;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
 /**
  * @author Josh Hills
@@ -8,24 +14,60 @@ import javax.swing.JLabel;
  */
 public class Ribbon {
 	
+	// Parent reference.
+	private Window window;
+	
 	// Main component to be styled and modified.
-	JLabel ribbon;
+	private JPanel ribbon;
+	
+	// Declare a Layout Manager for fine-tuned positioning of inner components.
+	private FlowLayout fl;
+	
+	// Buttons to be placed on the ribbon.
+	private JButton backBtn, forwardBtn, refreshBtn, homeBtn, goBtn;
 	
 	/**
 	 * Constructor sets-up the ribbon tool-bar by creating and compiling relevant components.
+	 * 
+	 * @param window	Abstract container.
 	 */
-	public Ribbon() {
+	public Ribbon(Window window) {
 		
-		// Set-up ribbon with properties and create and add components.
+		/* Set-up ribbon with properties. */
+		
+		// Create layout.
+		fl = new FlowLayout();		
+		// Create ribbon.
+		ribbon = new JPanel(fl);
+		
+		/* Back button. */
+		
+		// Create a 'back' button.
+		backBtn = CustomButton.createButton(new ImageIcon(".Assets/ButtonIcons/BackBtn/placeholder.png"));
+		// Add an action listener- if clicked...
+		backBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				// Conduct operation on the correct page based on the actively selected tab.
+				window.getTabBar().getPages().get(
+						window.getTabBar().getComponent().getSelectedIndex()).back();
+				
+			}
+			
+		});
+		// Add it to the ribbon.
+		ribbon.add(backBtn);	
 		
 	}
 	
 	/**
 	 * Method returns the main component post-initialisation.
 	 * 
-	 * @return	JLabel component that composes the browser 'ribbon'.
+	 * @return	JPanel component that composes the browser 'ribbon'.
 	 */
-	public JLabel getComponent() {
+	public JPanel getComponent() {
 		
 		return ribbon;
 		

@@ -97,4 +97,30 @@ public class CustomButton {
 		
 	}
 	
+	/**
+	 * Overloaded method initialises a button with general, roll-over and down image states.
+	 * 
+	 * @param image			The button's desired static image.
+	 * @param imageOver		The button's desired hover-over image.
+	 * @param imageDown		The button's desired pressed image.
+	 * @param imageDisabled	The button's desired disabled image.
+	 * @return				The formatted button.
+	 */
+	public static JButton createButton(ImageIcon image, ImageIcon imageOver, ImageIcon imageDown, ImageIcon imageDisabled) {
+		
+		// Create button without formatting.
+		JButton btn = createVanillaBtn();
+		// Set button image.
+		btn.setIcon(image);
+		// Set button-over image.
+		btn.setRolloverIcon(imageOver);
+		// Set button-down image.
+		btn.setPressedIcon(imageDown);
+		// Set button-disabled image.
+		btn.setDisabledIcon(imageDisabled);
+		
+		return btn;
+		
+	}
+	
 }

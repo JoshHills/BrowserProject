@@ -61,12 +61,15 @@ public class Browser {
 	/* Important context-specific state objects. */
 	
 	// Declare an object to manage the browser's 'Bookmark' object related operations.
-	BookmarksManager bmManager;
+	private BookmarksManager bmManager;
 	// Stored collection of user's browser bookmarks.
-	List<Bookmark> bms = new ArrayList<Bookmark>();
+	private List<Bookmark> bookmarks = new ArrayList<Bookmark>();
 	
 	// Stored persistent user-history.
-	List<URL> history = new ArrayList<URL>();
+	private List<URL> history = new ArrayList<URL>();
+	
+	// List of currently active windows.
+	private List<Window> windows = new ArrayList<Window>();
 	
 	/**
 	 * Main method assembles components to
@@ -74,9 +77,11 @@ public class Browser {
 	 */
 	public static void main(String[] args) {
 		
-		/* Create components! */
 		Browser brws = Browser.getInstance();
-		System.out.println(brws.maximised);
+		
+		/* Create components! */
+		brws.windows.add(new Window());
+		brws.windows.get(0).getComponent().setVisible(true);
 		
 	}
 	
@@ -199,6 +204,8 @@ public class Browser {
 			else {
 				// Log that something failed.
 				failed = true;
+				// Revert user setting to default.
+				homepage = DEFAULT_HOMEPAGE;
 			}
 			
 		}
@@ -235,7 +242,47 @@ public class Browser {
 		}
 		
 	}
-	
+
 	/* Accessor methods. */
+	
+	public String getBROWSER_NAME() {
+		return BROWSER_NAME;
+	}
+
+	public int getxSize() {
+		return xSize;
+	}
+
+	public int getySize() {
+		return ySize;
+	}
+
+	public boolean isMaximised() {
+		return maximised;
+	}
+
+	public Color getTheme() {
+		return theme;
+	}
+
+	public URL getHomepage() {
+		return homepage;
+	}
+	
+	public BookmarksManager getBmManager() {
+		return bmManager;
+	}
+	
+	public List<Bookmark> getBookmarks() {
+		return bookmarks;
+	}
+	
+	public List<URL> getHistory() {
+		return history;
+	}
+	
+	public List<Window> getWindows() {
+		return windows;
+	}
 	
 }

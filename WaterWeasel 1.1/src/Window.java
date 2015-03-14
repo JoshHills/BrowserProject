@@ -44,8 +44,9 @@ public class Window {
 		// Set the window's initial size.
 		frame.setSize(Browser.getInstance().getxSize(), Browser.getInstance().getySize());
 		// Set the window's initial extended state.
-		if(Browser.getInstance().isMaximised())
+		if(Browser.getInstance().isMaximised()) {
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		}
 		// Set the window's initial theme.
 		frame.getContentPane().setBackground(Browser.getInstance().getTheme());
 		
@@ -64,9 +65,7 @@ public class Window {
 		// Create tab bar (manages tabs and pages).
 		tabBar = new TabBar(this);
 		// Add tab bar to window.
-		frame.add(tabBar.getComponent());
-		
-		
+		frame.add(tabBar.getComponent());				
 		
 		// Add the keyboard shortcut listener.
 		

@@ -43,7 +43,7 @@ public class Ribbon {
 		/* Back button. */
 		
 		// Create a 'back' button.
-		backBtn = CustomButton.createButton(new ImageIcon(".Assets/ButtonIcons/BackBtn/placeholder.png"));
+		backBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/BackBtn/placeholder.png"));
 		// Add an action listener- if clicked...
 		backBtn.addActionListener(new ActionListener() {
 
@@ -59,6 +59,26 @@ public class Ribbon {
 		});
 		// Add it to the ribbon.
 		ribbon.add(backBtn);	
+		
+		/* Forward button. */
+		
+		// Create a 'forward' button.
+		forwardBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/ForwardBtn/placeholder.png"));
+		// Add an action listener- if clicked...
+		forwardBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				// Conduct operation on the correct page based on the actively selected tab.
+				window.getTabBar().getPages().get(
+						window.getTabBar().getComponent().getSelectedIndex()).forward();
+				
+			}
+			
+		});
+		// Add it to the ribbon.
+		ribbon.add(forwardBtn);	
 		
 	}
 	

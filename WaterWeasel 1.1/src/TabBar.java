@@ -9,6 +9,8 @@ import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * @author Josh Hills
@@ -28,9 +30,6 @@ public class TabBar {
 	
 	// List of currently active pages within window.
 	private List<Page> pages = new ArrayList<Page>();
-	
-	// Store amount of open tabs.
-	private int openTabs = 0;
 	
 	/**
 	 * Constructor initialises components.
@@ -57,8 +56,6 @@ public class TabBar {
 		pages.add(new Page());
 		
 		tabBar.addTab("Tab " + pages.size(), pages.get(pages.size() - 1).getComponent());
-
-		openTabs++;
 		
 	}
 	
@@ -76,6 +73,5 @@ public class TabBar {
 	public List<Page> getPages() {
 		return pages;
 	}
-
 	
 }

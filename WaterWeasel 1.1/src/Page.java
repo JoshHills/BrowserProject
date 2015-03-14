@@ -23,7 +23,7 @@ public class Page implements HyperlinkListener {
 	// List of the page's visited URLs.
 	private List<URL> visited = new ArrayList<URL>();
 	// Index integer for basic iteration.
-	private int index = 0;
+	private int index;
 	
 	/**
 	 * Constructor sets-up page properties and adds a hyper-link listener.
@@ -41,6 +41,8 @@ public class Page implements HyperlinkListener {
 		page.addHyperlinkListener(this);
 		// Display the default page.
 		show(Browser.getInstance().getHomepage());
+		// Ensure index defaults to zero.
+		index = 0;
 		
 	}
 	
@@ -141,8 +143,8 @@ public class Page implements HyperlinkListener {
 	 */
 	public void forward() {
 		
-		// If backward navigation is possible.
-		if(index != visited.size()) {
+		// If forward navigation is possible.
+		if(index != (visited.size() - 1)) {
 			
 			// Increment index by one.
 			index++;

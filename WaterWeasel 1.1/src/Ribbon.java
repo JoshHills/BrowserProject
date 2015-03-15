@@ -48,7 +48,7 @@ public class Ribbon {
 		backBtn.addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				
 				// Conduct operation on the correct page based on the actively selected tab.
 				window.getTabBar().getPages().get(
@@ -68,7 +68,7 @@ public class Ribbon {
 		forwardBtn.addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				
 				// Conduct operation on the correct page based on the actively selected tab.
 				window.getTabBar().getPages().get(
@@ -79,6 +79,26 @@ public class Ribbon {
 		});
 		// Add it to the ribbon.
 		ribbon.add(forwardBtn);	
+		
+		/* Refresh button. */
+		
+		// Create a 'refresh' button.
+		refreshBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/RefreshBtn/placeholder.png"));
+		// Add an action listener- if clicked...
+		refreshBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				// Conduct operation on the correct page based on the actively selected tab.
+				window.getTabBar().getPages().get(
+						window.getTabBar().getComponent().getSelectedIndex()).refresh();
+				
+			}
+			
+		});
+		// Add it to the ribbon.
+		ribbon.add(refreshBtn);
 		
 	}
 	

@@ -2,10 +2,12 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.net.URL;
+
 import javax.swing.JEditorPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent.EventType;
+import javax.swing.text.Document;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
@@ -41,6 +43,7 @@ public class Page implements HyperlinkListener {
 		page.addHyperlinkListener(this);
 		// Display the default page.
 		show(Browser.getInstance().getHomepage());
+		
 		// Ensure index defaults to zero.
 		index = 0;
 		
@@ -100,7 +103,7 @@ public class Page implements HyperlinkListener {
 			page.setPage(url);
 			
 			// If the index is not at the current page.
-			if(index < visited.size()) {
+			if(index < (visited.size() - 1)) {
 				// Remove the queued links.
 				for(int i = 0; i < (visited.size() - index); i++) {
 					visited.remove(visited.size() - i);
@@ -157,6 +160,27 @@ public class Page implements HyperlinkListener {
 		}
 		
 	}	
+	
+	/**
+	 * Method refreshes the current web-page- the Java Documentation explains:
+	 * "If the desired URL is the one currently being displayed, the document
+	 * will not be reloaded. To force a document reload it is necessary to clear
+	 * the stream description"- this explains the extra code below.
+	 */
+	public void refresh() {
+		
+		// Attempt to display the current web-page again.
+		try {
+			
+			// Force a null stream description for true refresh.
+			Document doc = page.getDocument();
+			doc.putProperty(Document.StreamDescriptionProperty, null);
+			
+			page.setPage(visited.get(index));
+		
+		} catch (IOException e) {}
+		
+	}
 	
 	/* Accessor methods. */
 	

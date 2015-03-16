@@ -24,7 +24,10 @@ public class Ribbon {
 	private FlowLayout fl;
 	
 	// Buttons to be placed on the ribbon.
-	private JButton backBtn, forwardBtn, refreshBtn, homeBtn, goBtn;
+	private JButton logoBtn, backBtn, forwardBtn, refreshBtn, goBtn, homeBtn;
+	
+	// Search bar.
+	private SearchBar searchBar;
 	
 	/**
 	 * Constructor sets-up the ribbon tool-bar by creating and compiling relevant components.
@@ -39,6 +42,13 @@ public class Ribbon {
 		fl = new FlowLayout();		
 		// Create ribbon.
 		ribbon = new JPanel(fl);
+		
+		/* Logo (about) button. */
+		
+		// Create the logo button.
+		logoBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/LogoBtn/placeholder.png"));
+		// Add it to the ribbon.
+		ribbon.add(logoBtn);
 		
 		/* Back button. */
 		
@@ -99,6 +109,17 @@ public class Ribbon {
 		});
 		// Add it to the ribbon.
 		ribbon.add(refreshBtn);
+		
+		/* Search bar. */
+		
+		// Create a 'search bar'.
+		searchBar = new SearchBar();
+		// Add it to the ribbon.
+		ribbon.add(searchBar.getComponent());
+		
+		/* Go button. */
+		
+		/* Home button. */
 		
 	}
 	

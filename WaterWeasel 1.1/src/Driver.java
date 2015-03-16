@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
@@ -77,23 +78,20 @@ public class Driver {
 			
 		});
 		
-		window.add(create);
-		*/
-		
-		/* Test JTabbedPane */
+		window.add(create); */
 		
 		JFrame window = new JFrame("Test Tabs");
 		
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setSize(600, 600);
 		
-		JTabbedPane tabPane = new JTabbedPane();
-		Page page = new Page();
-		tabPane.addTab("TAB 1", page.getComponent());
-		page.show(Browser.getInstance().getDEFAULT_HOMEPAGE());
-		window.add(tabPane);
+		JPanel myPanel = new JPanel();
+		JTextField myText = new JTextField("Hello!");
+		
+		myPanel.add(myText);
+		window.add(myPanel);
+		
 		window.setVisible(true);
-			
 		
 	}
 

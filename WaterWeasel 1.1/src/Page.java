@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent.EventType;
@@ -15,10 +16,13 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
  * @author Josh Hills
  * @version 1.1
  * 
- * This class models a browser web-page and it's operations.
+ * This class models a browser web-page viewport and it's operations.
  */
 public class Page implements HyperlinkListener {
 
+	// Wrapper class for main component adds scrolling functionality.
+	private JScrollPane scrollPane;
+	
 	// Main component to be styled and modified.
 	private JEditorPane page;
 	
@@ -43,6 +47,10 @@ public class Page implements HyperlinkListener {
 		page.addHyperlinkListener(this);
 		// Display the default page.
 		show(Browser.getInstance().getHomepage());
+		
+		// By initialising 'JScrollPane' object, give page scroll-bars.
+		scrollPane = new JScrollPane(page, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		// Ensure index defaults to zero.
 		index = 0;
@@ -189,8 +197,8 @@ public class Page implements HyperlinkListener {
 	 * 
 	 * @return	JEditorPane component modelled after a browser page.
 	 */
-	public JEditorPane getComponent() {
-		return page;
+	public JScrollPane getComponent() {
+		return scrollPane;
 	}
 	
 	/**

@@ -29,6 +29,9 @@ public class Ribbon {
 	// Search bar.
 	private SearchBar searchBar;
 	
+	// Options menu.
+	
+	
 	/**
 	 * Constructor sets-up the ribbon tool-bar by creating and compiling relevant components.
 	 * 
@@ -113,13 +116,65 @@ public class Ribbon {
 		/* Search bar. */
 		
 		// Create a 'search bar'.
-		searchBar = new SearchBar();
+		searchBar = new SearchBar(window);
 		// Add it to the ribbon.
 		ribbon.add(searchBar.getComponent());
 		
 		/* Go button. */
 		
+		// Create a 'go' button.
+		goBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/GoBtn/placeholder.png"));
+		// Add an action listener- if clicked...
+		goBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				searchBar.fire();
+				
+			}
+			
+		});
+		// Add it to the ribbon.
+		ribbon.add(goBtn);
+		
 		/* Home button. */
+		
+		// Create a 'home' button.
+		homeBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/HomeBtn/placeholder.png"));
+		// Add an action listener- if clicked...
+		homeBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				// If the active tab is already at the homepage.
+				if(searchBar.getAddressField().getText().equals(Browser.getInstance().getHomepage().toString())) {
+					
+					// Make it refresh to check for updates.
+					window.getTabBar().getPages().get(
+							window.getTabBar().getComponent().getSelectedIndex()).refresh();
+					
+				}
+				// Otherwise revert the active-tab to the browser's homepage.
+				else {
+					
+					window.getTabBar().getPages().get(
+						window.getTabBar().getComponent().getSelectedIndex()).show(
+								Browser.getInstance().getHomepage());
+					// Ensure the text in the address field updates correctly.
+					searchBar.getAddressField().setText(Browser.getInstance().getHomepage().toString());	
+				
+				}
+				
+			}
+			
+		});
+		// Add it to the ribbon.
+		ribbon.add(homeBtn);
+		
+		/* Options Menu. */
+		
 		
 	}
 	

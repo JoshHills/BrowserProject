@@ -12,6 +12,9 @@ import javax.swing.event.DocumentListener;
  */
 public class SearchBar {
 	
+	// Parent container.
+	private Window window;
+	
 	// Main component to be styled and modified.
 	private JPanel searchBar;
 	
@@ -21,7 +24,10 @@ public class SearchBar {
 	/**
 	 * Constructor sets-up the search-bar by creating and compiling relevant components.
 	 */
-	public SearchBar() {
+	public SearchBar(Window window) {
+		
+		// Set parent container.
+		this.window = window;
 		
 		/* Create search bar with components. */
 		
@@ -94,6 +100,28 @@ public class SearchBar {
 	}
 	
 	/**
+	 * This method fires off the text in the address field to display a new web-page-
+	 * if the address is not an URL it will search for the string using the default search engine.
+	 */
+	public void fire() {
+		
+		// If the URL validates...
+		if(Browser.getInstance().makeURL(addressField.getText()) != null) {
+			
+			// Get the currently open page and set it to the new web-page.
+			window.getTabBar().getPages().get(
+					window.getTabBar().getComponent().getSelectedIndex()).show(
+							Browser.getInstance().makeURL(addressField.getText()));
+			
+		}
+		// Else search for the string.
+		else {
+			
+		}
+		
+	}
+	
+	/**
 	 * Method returns the main component post-initialisation.
 	 * 
 	 * @return	JPanel component containing functioning browser navigation bar.
@@ -102,6 +130,17 @@ public class SearchBar {
 		
 		return searchBar;
 		
+	}
+	
+	/**
+	 * Method returns the component which holds a user-entered web-address.
+	 *
+	 * @return	JTextField component containing URLs.
+	 */
+	public JTextField getAddressField() {
+		
+		return addressField;
+				
 	}
 	
 }

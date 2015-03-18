@@ -14,7 +14,10 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
@@ -82,16 +85,22 @@ public class Driver {
 		
 		JFrame window = new JFrame("Test Tabs");
 		
+		window.setLayout(new FlowLayout());
+		
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setSize(600, 600);
 		
-		JPanel myPanel = new JPanel();
-		JTextField myText = new JTextField("Hello!");
 		
-		myPanel.add(myText);
-		window.add(myPanel);
+		
+		JPopupMenu popup = new JPopupMenu();
+		popup.add(new JMenuItem("lelelelel"));
+		
+		JButton myButton = new JButton("ELEAO");
+		myButton.setComponentPopupMenu(popup);
+		window.add(myButton);
 		
 		window.setVisible(true);
+		
 		
 	}
 

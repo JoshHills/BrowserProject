@@ -1,10 +1,15 @@
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 
 /**
  * @author Josh Hills
@@ -24,7 +29,7 @@ public class Ribbon {
 	private FlowLayout fl;
 	
 	// Buttons to be placed on the ribbon.
-	private JButton logoBtn, backBtn, forwardBtn, refreshBtn, goBtn, homeBtn;
+	private JButton logoBtn, backBtn, forwardBtn, refreshBtn, goBtn, homeBtn, optsBtn;
 	
 	// Search bar.
 	private SearchBar searchBar;
@@ -175,6 +180,58 @@ public class Ribbon {
 		
 		/* Options Menu. */
 		
+		// Create a pop-up menu.
+		JPopupMenu optsMenu = new JPopupMenu();
+		
+		/* Add options. */
+		
+		// Create new tab item.
+		JMenuItem newTab = new JMenuItem("New Tab");
+		// Set its mnemonic.
+		newTab.setMnemonic(KeyEvent.VK_N);
+		// Add its action listener- if clicked...
+		newTab.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				window.getTabBar().add();
+				
+			}
+						
+		});
+		optsMenu.add(newTab);
+		
+		// Create an 'options' button.
+		optsBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/OptsBtn/placeholder.png"));
+		// Add an action listener- if clicked...
+		optsBtn.addActionListener(new ActionListener() {
+
+			/**
+			 * This method handles the displaying of the pop-up settings
+			 * menu upon clicking the options button.
+			 * 
+			 * @Override
+			 */
+			public void actionPerformed(ActionEvent e) {
+				
+				// Get the source component of the event.
+				JComponent comp = (JComponent) e.getSource();
+				
+				// Get the location of the point on screen.
+				Point point = comp.getLocationOnScreen();
+				
+				// Show the options menu.
+				optsMenu.show(comp, 0, 0);
+				
+				// Anchor the options menu to the calling component.
+				optsMenu.setLocation(point.x, point.y + comp.getHeight());
+				
+			}
+
+		});
+		// Add it to the ribbon.
+		ribbon.add(optsBtn);
 		
 	}
 	

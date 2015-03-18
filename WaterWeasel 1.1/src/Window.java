@@ -96,4 +96,15 @@ public class Window {
 	
 	}
 	
+	/**
+	 * Method returns the ribbon component.
+	 * 
+	 * @return	This window's 'Ribbon' instance.
+	 */
+	public Ribbon getRibbon() {
+		
+		return ribbon;
+		
+	}
+	
 }

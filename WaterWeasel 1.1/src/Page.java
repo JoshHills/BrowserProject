@@ -1,13 +1,13 @@
+
 import java.util.List;
 import java.util.ArrayList;
+import java.util.ListIterator;
 import java.io.IOException;
 import java.net.URL;
-
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.event.HyperlinkEvent.EventType;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
@@ -16,10 +16,11 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
  * @author Josh Hills
  * @version 1.1
  * 
- * This class models a browser web-page viewport and it's operations.
+ * This class models a browser web-page viewport and it's operations;
+ * thus it implements a listener for events pertaining to 'Hyperlinks'.
  */
 public class Page implements HyperlinkListener {
-
+	
 	// Wrapper class for main component adds scrolling functionality.
 	private JScrollPane scrollPane;
 	
@@ -28,32 +29,30 @@ public class Page implements HyperlinkListener {
 	
 	// List of the page's visited URLs.
 	private List<URL> visited = new ArrayList<URL>();
-	// Index integer for basic iteration.
-	private int index;
+	// Iterator for list navigation.
+	private ListIterator<URL> iterator = visited.listIterator();
 	
 	/**
 	 * Constructor sets-up page properties and adds a hyper-link listener.
 	 */
 	public Page() {
-		
+
 		/* Create and set-up main component. */
 		
+		// Create component.
 		page = new JEditorPane();
 		// Set the content type to HTML for proper functioning.
 		page.setContentType("text/html");
 		// Ensure it is not editable.
 		page.setEditable(false);
-		// Self reference page's implemented listener.
+		// Self reference page's implemented listener method.
 		page.addHyperlinkListener(this);
 		// Display the default page.
 		show(Browser.getInstance().getHomepage());
 		
-		// By initialising 'JScrollPane' object, give page scroll-bars.
+		// By initialising 'JScrollPane' object, give page appropriate scroll-bar functionality.
 		scrollPane = new JScrollPane(page, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
-		// Ensure index defaults to zero.
-		index = 0;
 		
 	}
 	
@@ -85,7 +84,7 @@ public class Page implements HyperlinkListener {
 				doc.processHTMLFrameHyperlinkEvent(frameEvent);
 				
 			}
-			// Otherwise, if the event has been activated normally.
+			// Otherwise, if the event has been activated normally...
 			else {
 				
 				// Show the new page.
@@ -105,27 +104,32 @@ public class Page implements HyperlinkListener {
 	 */
 	public void show(URL url) {
 		
-		// Attempt to display the page.
+		// Attempt to perform the actions relevant to loading a new web-page...
 		try {
 			
+			// Display the page in the viewport.
 			page.setPage(url);
 			
-			// If the index is not at the current page.
-			if(index < (visited.size() - 1)) {
-				// Remove the queued links.
-				for(int i = 0; i < (visited.size() - index); i++) {
-					visited.remove(visited.size() - i);
-				}
+			// If the index is not at the current page, remove the following visited links.
+			while(iterator.hasNext()) {
+				
+				// Advance the iterator.
+				iterator.next();
+				
+				// Remove the element.
+				iterator.remove();
+				
 			}
 			
 			// Log page in temporary history.
-			visited.add(url);
-			// Iterate index.
-			index++;
+			iterator.add(url);
+				
+		} catch (IOException e) {
 			
-			//Update buttons.
-			
-		} catch (IOException e) {}
+			// Handle any errors appropriately.
+			handleException();
+		
+		}
 		
 	}
 	
@@ -134,16 +138,33 @@ public class Page implements HyperlinkListener {
 	 */
 	public void back() {
 		
-		// If backward navigation is possible.
-		if(index != 0) {
+		// So long as any navigation is possible...
+		if(visited.size() > 1) {
 			
-			// Decrease index by one.
-			index--;
+			// If the iterator is hovering at the outermost position...
+			if(iterator.hasPrevious() && !iterator.hasNext()) {
+				
+				// Move it inward, ignoring the page that is already being displayed.
+				iterator.previous();
+				
+			}
 			
-			// Attempt to display the previous web-page.
-			try {
-				page.setPage(visited.get(index));
-			} catch (IOException e) {}
+			// If backward navigation is possible...
+			if(iterator.hasPrevious()) {
+				
+				// Attempt to display the previous web-page.
+				try {
+					
+					page.setPage(iterator.previous());
+				
+				} catch (IOException e) {
+					
+					// Handle any errors appropriately.
+					handleException();
+				
+				}
+				
+			}
 			
 		}
 		
@@ -154,17 +175,34 @@ public class Page implements HyperlinkListener {
 	 */
 	public void forward() {
 		
-		// If forward navigation is possible.
-		if(index != (visited.size() - 1)) {
+		// So long as any navigation is possible...
+		if(visited.size() > 1) {
 			
-			// Increment index by one.
-			index++;
+			// If the iterator is hovering at the outermost position...
+			if(iterator.hasNext() && !iterator.hasPrevious()) {
+				
+				// Move it inward, ignoring the page that is already being displayed.
+				iterator.next();
 			
-			// Attempt to display the next web-page.
-			try {
-				page.setPage(visited.get(index));
-			} catch (IOException e) {}
+			}
 			
+			// If forward navigation is possible...
+			if(iterator.hasNext()) {
+				
+				// Attempt to display the next web-page.
+				try {
+					
+					page.setPage(iterator.next());
+				
+				} catch (IOException e) {
+					
+					// Handle any errors appropriately.
+					handleException();
+				
+				}
+			
+			}
+		
 		}
 		
 	}	
@@ -180,13 +218,33 @@ public class Page implements HyperlinkListener {
 		// Attempt to display the current web-page again.
 		try {
 			
+			// Store the URL temporarily.
+			URL current = page.getPage();
+			
 			// Force a null stream description for true refresh.
 			Document doc = page.getDocument();
 			doc.putProperty(Document.StreamDescriptionProperty, null);
 			
-			page.setPage(visited.get(index));
+			// Set the page again.
+			page.setPage(current);
 		
-		} catch (IOException e) {}
+		} catch (IOException e) {
+			
+			// Handle any errors appropriately.
+			handleException();
+		
+		}
+		
+	}
+	
+	/**
+	 * This method handles any errors thrown while performing 'Page' functions
+	 * in a context-bound manner.
+	 * 
+	 * In this instance, it is appropriate to display a dialogue prompt to warn
+	 * the user of the mishap.
+	 */
+	private void handleException() {
 		
 	}
 	
@@ -198,16 +256,21 @@ public class Page implements HyperlinkListener {
 	 * @return	JEditorPane component modelled after a browser page.
 	 */
 	public JScrollPane getComponent() {
+		
 		return scrollPane;
+	
 	}
 	
 	/**
-	 * Get the private index field.
+	 * Method returns the iterator for the temporary list store of
+	 * visited pages.
 	 * 
-	 * @return	Index of currently active element of visited 'URL' list.
+	 * @return	ListIterator for the page's URL ArrayList.
 	 */
-	public int getIndex() {
-		return index;
+	public ListIterator<URL> getIterator() {
+		
+		return iterator;
+		
 	}
-
+	
 }

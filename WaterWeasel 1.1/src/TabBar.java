@@ -53,8 +53,10 @@ public class TabBar {
 	 */
 	public void add() {
 		
+		// Add a new page to the list.
 		pages.add(new Page());
 		
+		// Display the page in a new tab.
 		tabBar.addTab("Tab " + pages.size(), pages.get(pages.size() - 1).getComponent());
 		
 	}

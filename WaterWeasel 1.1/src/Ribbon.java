@@ -204,7 +204,41 @@ public class Ribbon {
 			}
 						
 		});
+		// Add it to the menu.
 		optsMenu.add(newTab);
+		
+		// Create a new window item.
+		JMenuItem newWindow = new JMenuItem("New Window");
+		// Set its mnemonic.
+		newWindow.setMnemonic(KeyEvent.VK_W);
+		// Add its action listener- if clicked...
+		newWindow.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				// Open a new window.
+				Browser.getInstance().add();
+				
+			}
+			
+		});
+		// Add it to the menu.
+		optsMenu.add(newWindow);
+		
+		// Create a new incognito window item.
+		JMenuItem newIncognitoWindow = new JMenuItem("New Incognito Window");
+		// Set its mnemonic.
+		newIncognitoWindow.setMnemonic(KeyEvent.VK_I);
+		// Add it's action listener- if clicked...
+		/* CODE HERE */
+		// Add it to the menu.
+		optsMenu.add(newIncognitoWindow);
+		
+		// Add a separator.
+		optsMenu.addSeparator();
+		
+// Bookmark.
 		
 		// Create an 'options' button.
 		optsBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/OptsBtn/placeholder.png"));
@@ -229,7 +263,7 @@ public class Ribbon {
 				optsMenu.show(comp, 0, 0);
 				
 				// Anchor the options menu to the calling component.
-				optsMenu.setLocation(point.x, point.y + comp.getHeight());
+				optsMenu.setLocation(point.x - (optsMenu.getWidth() - optsBtn.getWidth()), point.y + comp.getHeight());
 				
 			}
 

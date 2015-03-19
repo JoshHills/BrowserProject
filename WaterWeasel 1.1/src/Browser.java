@@ -77,10 +77,7 @@ public class Browser {
 	 */
 	public static void main(String[] args) {
 		
-		Browser brws = Browser.getInstance();
-		
-		/* Create components! */
-		brws.windows.add(new Window());
+		Browser.getInstance().add();
 		
 	}
 	
@@ -102,6 +99,16 @@ public class Browser {
 		// Attempt to set-up this 'Browser' instance with centralised user-settings.
 		load();
 			
+	}
+	
+	/**
+	 * Method creates a new 'Window' instance.
+	 */
+	public void add() {
+		
+		// Add a window the 'Browser' singleton.
+		Browser.getInstance().getWindows().add(new Window());
+		
 	}
 		
 	/*

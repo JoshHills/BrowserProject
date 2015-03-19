@@ -71,6 +71,8 @@ public class Ribbon {
 				// Conduct operation on the correct page based on the actively selected tab.
 				window.getTabBar().getPages().get(
 						window.getTabBar().getComponent().getSelectedIndex()).back();
+				// Update address bar accordingly.
+				window.getTabBar().updateAddress();
 				
 			}
 			
@@ -91,6 +93,8 @@ public class Ribbon {
 				// Conduct operation on the correct page based on the actively selected tab.
 				window.getTabBar().getPages().get(
 						window.getTabBar().getComponent().getSelectedIndex()).forward();
+				// Update address bar accordingly.
+				window.getTabBar().updateAddress();
 				
 			}
 			
@@ -243,6 +247,17 @@ public class Ribbon {
 	public JPanel getComponent() {
 		
 		return ribbon;
+		
+	}
+	
+	/**
+	 * Method returns the search bar component of the ribbon.
+
+	 * @return	SearchBar object that composes the browser's search bar.
+	 */
+	public SearchBar getSearchBar() {
+		
+		return searchBar;
 		
 	}
 	

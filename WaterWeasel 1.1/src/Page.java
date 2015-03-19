@@ -32,6 +32,9 @@ public class Page implements HyperlinkListener {
 	// Iterator for list navigation.
 	private ListIterator<URL> iterator = visited.listIterator();
 	
+	// Store current URL- bypasses overhead of swing component's 'getURL' method.
+	private URL currentURL;
+	
 	/**
 	 * Constructor sets-up page properties and adds a hyper-link listener.
 	 */
@@ -123,6 +126,8 @@ public class Page implements HyperlinkListener {
 			
 			// Log page in temporary history.
 			iterator.add(url);
+			// Update current URL.
+			currentURL = url;
 				
 		} catch (IOException e) {
 			
@@ -155,7 +160,8 @@ public class Page implements HyperlinkListener {
 				// Attempt to display the previous web-page.
 				try {
 					
-					page.setPage(iterator.previous());
+					currentURL = iterator.previous();
+					page.setPage(currentURL);
 				
 				} catch (IOException e) {
 					
@@ -192,7 +198,8 @@ public class Page implements HyperlinkListener {
 				// Attempt to display the next web-page.
 				try {
 					
-					page.setPage(iterator.next());
+					currentURL = iterator.next();
+					page.setPage(currentURL);
 				
 				} catch (IOException e) {
 					
@@ -253,7 +260,7 @@ public class Page implements HyperlinkListener {
 	/**
 	 * Method returns the main component post-initialisation.
 	 * 
-	 * @return	JEditorPane component modelled after a browser page.
+	 * @return	JScrollPane component wrapping the page.
 	 */
 	public JScrollPane getComponent() {
 		
@@ -270,6 +277,17 @@ public class Page implements HyperlinkListener {
 	public ListIterator<URL> getIterator() {
 		
 		return iterator;
+		
+	}
+	
+	/**
+	 * Method returns the current URL being displayed by the page.
+	 * 
+	 * @return	URL of the page in its current state.
+	 */
+	public URL getCurrentURL() {
+		
+		return currentURL;
 		
 	}
 	

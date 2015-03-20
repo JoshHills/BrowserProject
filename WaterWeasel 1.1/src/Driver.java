@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -82,7 +83,7 @@ public class Driver {
 		});
 		
 		window.add(create); */
-		
+		/* 
 		JFrame window = new JFrame("Test Tabs");
 		
 		window.setLayout(new FlowLayout());
@@ -100,7 +101,11 @@ public class Driver {
 		window.add(myButton);
 		
 		window.setVisible(true);
+		*/
 		
+		Date date = new Date();
+		
+		System.out.println(date.toString());
 		
 	}
 

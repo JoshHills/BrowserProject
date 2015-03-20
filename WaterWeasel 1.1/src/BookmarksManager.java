@@ -17,7 +17,7 @@ public class BookmarksManager {
 	
 	/**
 	 * As this class relies on the 'Browser' singleton, it will only be instantiated once.
-	 * This grabs all 'Bookmark' icons from a source folder and stores them in a hard-
+	 * This constructor grabs all 'Bookmark' icons from a source folder and stores them in a hard-
 	 * coded manner for use by Swing components (as a visual representation).
 	 */
 	public BookmarksManager() {
@@ -38,7 +38,9 @@ public class BookmarksManager {
 	/**
 	 * Display a page with information about the state of the browser's 'bookmarks'.
 	 */
-	public void display() {
+	public void createPage() {
+		
+		
 		
 	}
 	

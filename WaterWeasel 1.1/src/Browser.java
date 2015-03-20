@@ -6,11 +6,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.swing.JFrame;
 
@@ -24,10 +27,11 @@ import javax.swing.JFrame;
  * 
  * The 'Browser' object at the top level hierarchy subsequently
  * handles interpolation with local settings files and the
- * construction of the main window.
+ * construction of the main windows.
  */
 public class Browser {
 
+	// Browser name is a constant.
 	private final String BROWSER_NAME = "WaterWeasel";
 	
 	/*
@@ -44,6 +48,8 @@ public class Browser {
 	private final boolean DEFAULT_MAXIMISED = true;
 	// Overall browser theme.
 	private final Color DEFAULT_THEME = new Color(140,210,245);
+	// Incognito theme.
+	private final Color DEFAULT_PRIVATE_THEME = new Color(95,70,100);
 	// 'Homepage' loaded to first page.
 	private final URL DEFAULT_HOMEPAGE = makeURL(new File("./Assets/Welcome.html"));
 	
@@ -66,7 +72,7 @@ public class Browser {
 	private List<Bookmark> bookmarks = new ArrayList<Bookmark>();
 	
 	// Stored persistent user-history.
-	private List<URL> history = new ArrayList<URL>();
+	private SortedMap<Date, URL> history = new TreeMap<Date, URL>();
 	
 	// List of currently active windows.
 	private List<Window> windows = new ArrayList<Window>();
@@ -77,22 +83,30 @@ public class Browser {
 	 */
 	public static void main(String[] args) {
 		
+		// Add and therefore create a new browser window.
 		Browser.getInstance().add();
 		
 	}
 	
 	/**
-	 * SPOOL ABOUT SINGLETON HERE
+	 * Method models the Singleton design pattern, which itself
+	 * provides over-arching management of all open windows.
 	 * 
-	 * @return
+	 * @return	The only available instance of a 'Browser' object.
 	 */
 	public static Browser getInstance() {
-		if(instance == null)
+		
+		// If one does not exist...
+		if(instance == null) {
+			// Create one.
 			instance = new Browser();
+		}
+		// Return it regardless.
 		return instance;
 	}
+	
 	/**
-	 * Constructor is protected, prevents an inner-component from creating another instance.
+	 * Constructor is protected; this prevents an inner-component from creating another instance.
 	 */
 	protected Browser() {
 	
@@ -102,12 +116,26 @@ public class Browser {
 	}
 	
 	/**
-	 * Method creates a new 'Window' instance.
+	 * Method creates a new 'Window' object which displays itself on the screen.
 	 */
 	public void add() {
 		
-		// Add a window the 'Browser' singleton.
+		// Add a window the 'Browser'.
 		Browser.getInstance().getWindows().add(new Window());
+		
+	}
+	
+	/**
+	 * Overloaded method creates a new 'Window' with a specified privacy state.
+	 */
+	public void add(boolean incognito) {
+		
+		// Add a window the 'Browser'.
+		Browser.getInstance().getWindows().add(new Window());
+
+		// Set its privacy.
+		Browser.getInstance().getWindows().get(
+				Browser.getInstance().getWindows().size() - 1).makeIncognito(incognito);
 		
 	}
 		
@@ -250,12 +278,12 @@ public class Browser {
 	}
 	
 	/**
-	 * Overloaded method converts a File to an URL object. It is positioned
-	 * in this outer-most 'Browser' class for easy access, and serves to
-	 * remove boilerplate code when checking for exceptions.
+	 * Overloaded method converts a File to an URL object, which allows
+	 * the browser to load local web files with extensions such as
+	 * '.html'- this allows me to provide a splash page.
 	 * 
-	 * @param string	File to attempt to convert to an URL.
-	 * @return			A new URL object if successful.
+	 * @param file	File to attempt to convert to an URL.
+	 * @return		A new URL object if successful.
 	 */
 	public static URL makeURL(File file) {
 		
@@ -277,6 +305,10 @@ public class Browser {
 	
 	public URL getDEFAULT_HOMEPAGE() {
 		return DEFAULT_HOMEPAGE;
+	}
+	
+	public Color getDEFAULT_PRIVATE_THEME() {
+		return DEFAULT_PRIVATE_THEME;
 	}
 
 	public int getxSize() {
@@ -307,7 +339,7 @@ public class Browser {
 		return bookmarks;
 	}
 	
-	public List<URL> getHistory() {
+	public Map<Date, URL> getHistory() {
 		return history;
 	}
 	

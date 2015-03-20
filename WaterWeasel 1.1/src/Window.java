@@ -9,11 +9,11 @@ import javax.swing.JFrame;
  * @author Josh Hills
  * @version 1.1
  * 
- * This class models a browser window.
+ * This class models a custom browser window.
  */
 public class Window {
 		
-	// Main component to be styled and modified.
+	// Root component to be styled and modified.
 	private JFrame frame;
 	
 	// Declare a Layout Manager for fine-tuned positioning of inner components.
@@ -30,6 +30,11 @@ public class Window {
 	// Instance of browser's tab bar.
 	private TabBar tabBar;
 	
+	/* Window settings. */
+	
+	// Stores whether the window's functions will log URL operations- defaulted to false.
+	private boolean incognito = false;
+	
 	/**
 	 * Constructor sets-up window properties and adds the class' shortcut listener.
 	 */
@@ -37,7 +42,7 @@ public class Window {
 		
 		/* Create and set-up (style) the main window component. */
 		
-		// Initialise 'JFrame' variable to object (window) with the browser's name at the top.
+		// Initialise 'JFrame' variable to an object (window) with the browser's name at the top.
 		frame = new JFrame(Browser.getInstance().getBROWSER_NAME());
 		// Set the window's default close action.
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -75,6 +80,25 @@ public class Window {
 	}
 	
 	/**
+	 * Method compounds operations that enable browser-privacy.
+	 * 
+	 * @param incognito	State to set the window's privacy to.
+	 */
+	public void makeIncognito(boolean incognito) {
+		
+		// If the state is being set to true.
+		if(incognito) {
+			
+			// Adjust the field.
+			this.incognito = incognito;
+			// Change the window's theme.
+			frame.getContentPane().setBackground(Browser.getInstance().getDEFAULT_PRIVATE_THEME());
+			
+		}
+		
+	}
+	
+	/**
 	 * Method returns the main component post-initialisation.
 	 * 
 	 * @return	Loaded JFrame component modelled after a browser window.
@@ -104,6 +128,18 @@ public class Window {
 	public Ribbon getRibbon() {
 		
 		return ribbon;
+		
+	}
+	
+	/**
+	 * Method returns whether the window is set to
+	 * record history or not.
+	 * 
+	 * @return	Boolean value indicating the privacy state of the window.
+	 */
+	public boolean isIncognito() {
+		
+		return incognito;
 		
 	}
 	

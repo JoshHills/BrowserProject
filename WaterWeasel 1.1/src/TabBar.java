@@ -18,7 +18,7 @@ import javax.swing.event.ChangeListener;
 /**
  * @author Josh Hills
  * 
- * Model for tab-bar button retrieval inspired by a tutorial of 'java2s'
+ * Model for adding a close button to the tab-bar inspired by a tutorial of 'java2s'
  * at 'http://www.java2s.com/Tutorial/Java/0240__Swing/AddButtontotabbar.htm'.
  *
  * This class models a browser's tab bar for displaying active open pages.
@@ -48,6 +48,7 @@ public class TabBar {
 		
 		// Instantiate the tabbed pane.
 		tabBar = new JTabbedPane();
+		tabBar.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		// Add the first tab to display.
 		add();
 		// Add a change listener- when the active tab is changed...
@@ -57,7 +58,7 @@ public class TabBar {
 			public void stateChanged(ChangeEvent e) {
 				
 				// Update the text in the address bar.
-				updateAddress();
+				window.getRibbon().getSearchBar().updateAddress();
 				
 			}
 			
@@ -71,20 +72,40 @@ public class TabBar {
 	public void add() {
 		
 		// Add a new page to the list.
-		pages.add(new Page());
+		pages.add(new Page(window));
 		
 		// Display the page in a new tab.
 		tabBar.addTab(null, pages.get(pages.size() - 1).getComponent());
 		
-		/* Set-up the tab's panel. */
+		// Set the new tab to be the active one.
+		tabBar.setSelectedIndex(tabBar.getTabCount() - 1);
+
+		// Create and apply a tab panel.
+		tabBar.setTabComponentAt(tabBar.getTabCount() - 1, createTabPanel());
+		
+	}
+	
+	/**
+	 * Method handles the sophisticated initialisation of the inner components of a new tab-
+	 * this includes scraping the active web-page's name and creating a close button.
+	 */
+	private JPanel createTabPanel() {
+		
+		/* Create and style component. */
 		
 		// Create a new 'JPanel' to display the tab's title and button.
 		JPanel tabPanel = new JPanel();
 		// Make it transparent.
 		tabPanel.setOpaque(false);
+		
+		/* Tab title. */
+		
 		// Give it a title.
-		/* CODE HERE TO GRAB WEB-PAGE <title> TAG CONTENT! TEMPORARY ONE BELOW. */
+		/* CALL FUNCTION HERE TO GRAB WEB-PAGE <title> TAG CONTENT! TEMPORARY ONE BELOW. */
 		tabPanel.add(new JLabel("Tab " + pages.size()));
+		
+		/* Close button. */
+		
 		// Add the close button.
 		JButton closeBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/TabCloseBtn/placeholder.png"));
 		// Give it an action listener- when clicked...
@@ -111,7 +132,8 @@ public class TabBar {
 						// Remove the page from memory.				
 						pages.remove(i);
 						
-						updateAddress();
+						// Update the text in the address field.
+						window.getRibbon().getSearchBar().updateAddress();
 						
 					}
 					
@@ -122,28 +144,20 @@ public class TabBar {
 		});
 		// Add it to the tab panel.
 		tabPanel.add(closeBtn);
-		// Apply the tab panel.
-		tabBar.setTabComponentAt(tabBar.getTabCount() - 1, tabPanel);
 		
-		// Set the new tab to be the active one.
-		tabBar.setSelectedIndex(tabBar.getTabCount() - 1);
-		
-		// Get the address bar and set its text to match the page of the newly active tab.
-		window.getRibbon().getSearchBar().getAddressField().setText(
-			pages.get(tabBar.getSelectedIndex()).getCurrentURL().toString());
+		// Return the newly created panel.
+		return tabPanel;
 		
 	}
 	
 	/**
 	 * This method acts as a pseudo change-event, insomuch as it is called in various circumstances
-	 * where the tab bar has been updated and therefore the text of the address bar must reflect this-
+	 * where the tab bar has been updated and therefore the title of the active tab must reflect this-
 	 * it removes boilerplate code.
 	 */
-	public void updateAddress() {
+	public void updateTab() {
 		
-		// Get the address bar and set its text to match the page of the newly active tab.
-		window.getRibbon().getSearchBar().getAddressField().setText(
-			pages.get(tabBar.getSelectedIndex()).getCurrentURL().toString());
+		
 		
 	}
 	
@@ -160,8 +174,15 @@ public class TabBar {
 	
 	}
 	
+	/**
+	 * Method returns a list of the window's open pages.
+	 * 
+	 * @return	A list of the window's open pages.
+	 */
 	public List<Page> getPages() {
+		
 		return pages;
+		
 	}
 	
 }

@@ -1,9 +1,11 @@
 
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.io.IOException;
 import java.net.URL;
+
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
@@ -21,6 +23,9 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
  */
 public class Page implements HyperlinkListener {
 	
+	// Parent reference.
+	private Window window;
+	
 	// Wrapper class for main component adds scrolling functionality.
 	private JScrollPane scrollPane;
 	
@@ -32,14 +37,17 @@ public class Page implements HyperlinkListener {
 	// Iterator for list navigation.
 	private ListIterator<URL> iterator = visited.listIterator();
 	
-	// Store current URL- bypasses overhead of swing component's 'getURL' method.
+	// Store current URL- bypasses overhead of Swing component's 'getURL' method.
 	private URL currentURL;
 	
 	/**
 	 * Constructor sets-up page properties and adds a hyper-link listener.
 	 */
-	public Page() {
+	public Page(Window window) {
 
+		// Set parent reference.
+		this.window = window;
+		
 		/* Create and set-up main component. */
 		
 		// Create component.
@@ -110,24 +118,41 @@ public class Page implements HyperlinkListener {
 		// Attempt to perform the actions relevant to loading a new web-page...
 		try {
 			
-			// Display the page in the viewport.
-			page.setPage(url);
-			
-			// If the index is not at the current page, remove the following visited links.
-			while(iterator.hasNext()) {
+			// If the page is already being displayed...
+			if(url == page.getPage()) {
 				
-				// Advance the iterator.
-				iterator.next();
-				
-				// Remove the element.
-				iterator.remove();
+				// Refresh instead.
+				refresh();
 				
 			}
+			else {
 			
-			// Log page in temporary history.
-			iterator.add(url);
-			// Update current URL.
-			currentURL = url;
+				// Display the page in the viewport.
+				page.setPage(url);
+				
+				// If the index is not at the current page, remove the following visited links.
+				while(iterator.hasNext()) {
+					
+					// Advance the iterator.
+					iterator.next();
+					
+					// Remove the element.
+					iterator.remove();
+					
+				}
+				
+				// Log page in temporary history.
+				iterator.add(url);
+				// Log page in browser history.
+				logURL(url);
+				// Update current URL.
+				currentURL = url;
+				// Update address bar post-initialisation.
+				try {
+					window.getRibbon().getSearchBar().updateAddress();
+				} catch(NullPointerException e) {}
+			
+			}
 				
 		} catch (IOException e) {
 			
@@ -240,6 +265,21 @@ public class Page implements HyperlinkListener {
 			// Handle any errors appropriately.
 			handleException();
 		
+		}
+		
+	}
+	
+	/**
+	 * This method handles the storage of browser history.
+	 */
+	private void logURL(URL url) {
+		
+		// As long as the window is not set to private.
+		if(!window.isIncognito()) {
+			
+			// Add the URL to the history map, linked by the current time.
+			Browser.getInstance().getHistory().put(new Date(), url);
+			
 		}
 		
 	}

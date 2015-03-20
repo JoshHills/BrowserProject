@@ -1,4 +1,6 @@
 import java.awt.Color;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -53,6 +55,23 @@ public class SearchBar {
 		addressField = new JTextField(Browser.getInstance().getHomepage().toString());
 		// Remove border.
 		addressField.setBorder(null);
+		// Add key event listener to the address bar...
+		addressField.addKeyListener(new KeyAdapter() {
+			
+			// Whenever a key is released...
+			public void keyReleased(KeyEvent e) {
+				
+				// If the key was 'enter'...
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					
+					// Fire off the string for display.
+					fire();
+					
+				}
+				
+			}
+			
+		});
 		/*
 		 * Add listener to 'document' of the text-field
 		 * to allow an action to happen upon edit-
@@ -76,17 +95,19 @@ public class SearchBar {
 				handleEvent(e);
 			}
 			
+			// All changes route to this...
 			private void handleEvent(DocumentEvent e) {
 				
 				// If the address field is empty, tell the user to enter something.
 				if(addressField.getText().equals("")) {
 					predictiveField.setText("Enter:");
 				}
-				// If the address field looks like a link...
+				// If the address field looks like a link, tell the user to go.
 				else if(addressField.getText().contains("://") ||
 					addressField.getText().contains("www.")) {
 					predictiveField.setText("Go to:");
 				}
+				// Otherwise, tell the user the string will be searched for.
 				else {
 					predictiveField.setText("Search:");
 				}
@@ -106,18 +127,32 @@ public class SearchBar {
 	public void fire() {
 		
 		// If the URL validates...
-		if(Browser.getInstance().makeURL(addressField.getText()) != null) {
+		if(Browser.makeURL(addressField.getText()) != null) {
 			
 			// Get the currently open page and set it to the new web-page.
 			window.getTabBar().getPages().get(
 					window.getTabBar().getComponent().getSelectedIndex()).show(
-							Browser.getInstance().makeURL(addressField.getText()));
+							Browser.makeURL(addressField.getText()));
 			
 		}
 		// Else search for the string.
 		else {
 			
 		}
+		
+	}
+	
+	/**
+	 * This method acts as a pseudo change-event, insomuch as it is called in various circumstances
+	 * where the tab bar has been updated and therefore the text of the address bar must reflect this-
+	 * it removes boilerplate code.
+	 */
+	public void updateAddress() {
+		
+		// Get the address bar and set its text to match the page of the newly active tab.
+		addressField.setText(
+			window.getTabBar().getPages().get(
+					window.getTabBar().getComponent().getSelectedIndex()).getCurrentURL().toString());
 		
 	}
 	

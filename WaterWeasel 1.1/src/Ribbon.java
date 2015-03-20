@@ -72,7 +72,7 @@ public class Ribbon {
 				window.getTabBar().getPages().get(
 						window.getTabBar().getComponent().getSelectedIndex()).back();
 				// Update address bar accordingly.
-				window.getTabBar().updateAddress();
+				searchBar.updateAddress();
 				
 			}
 			
@@ -94,7 +94,7 @@ public class Ribbon {
 				window.getTabBar().getPages().get(
 						window.getTabBar().getComponent().getSelectedIndex()).forward();
 				// Update address bar accordingly.
-				window.getTabBar().updateAddress();
+				searchBar.updateAddress();
 				
 			}
 			
@@ -155,27 +155,15 @@ public class Ribbon {
 		homeBtn.addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				
-				// If the active tab is already at the homepage.
-				if(searchBar.getAddressField().getText().equals(Browser.getInstance().getHomepage().toString())) {
-					
-					// Make it refresh to check for updates.
-					window.getTabBar().getPages().get(
-							window.getTabBar().getComponent().getSelectedIndex()).refresh();
-					
-				}
-				// Otherwise revert the active-tab to the browser's homepage.
-				else {
-					
-					window.getTabBar().getPages().get(
-						window.getTabBar().getComponent().getSelectedIndex()).show(
-								Browser.getInstance().getHomepage());
-					// Ensure the text in the address field updates correctly.
-					searchBar.getAddressField().setText(Browser.getInstance().getHomepage().toString());	
-				
-				}
-				
+			public void actionPerformed(ActionEvent e) {
+			
+				// Load the homepage to the active tab.
+				window.getTabBar().getPages().get(
+					window.getTabBar().getComponent().getSelectedIndex()).show(
+							Browser.getInstance().getHomepage());
+				// Ensure the text in the address field updates correctly.
+				searchBar.getAddressField().setText(Browser.getInstance().getHomepage().toString());
+			
 			}
 			
 		});
@@ -199,6 +187,7 @@ public class Ribbon {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
+				// Open a new tab.
 				window.getTabBar().add();
 				
 			}
@@ -215,7 +204,7 @@ public class Ribbon {
 		newWindow.addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				
 				// Open a new window.
 				Browser.getInstance().add();
@@ -231,14 +220,22 @@ public class Ribbon {
 		// Set its mnemonic.
 		newIncognitoWindow.setMnemonic(KeyEvent.VK_I);
 		// Add it's action listener- if clicked...
-		/* CODE HERE */
+		newIncognitoWindow.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				// Open a new window.
+				Browser.getInstance().add(true);
+				
+			}
+			
+		});
 		// Add it to the menu.
 		optsMenu.add(newIncognitoWindow);
 		
 		// Add a separator.
 		optsMenu.addSeparator();
-		
-// Bookmark.
 		
 		// Create an 'options' button.
 		optsBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/OptsBtn/placeholder.png"));

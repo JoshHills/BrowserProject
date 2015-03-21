@@ -1,4 +1,7 @@
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.LayoutManager;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -34,14 +37,18 @@ public class SearchBar {
 		/* Create search bar with components. */
 		
 		// Initialise panel.
-		searchBar = new JPanel();
+		searchBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		// Give it a background colour.
 		searchBar.setBackground(Color.WHITE);
+		// Give it a border.
+		searchBar.setBorder(BorderFactory.createLineBorder(Color.black));
 		
 		/* Predictive box. */
 		
 		// Create a predictive text field for user-direction.
 		predictiveField = new JTextField("Enter:");
+		// Set the preferred size of the text-box.
+		predictiveField.setPreferredSize(new Dimension(45,20));
 		// Remove border.
 		predictiveField.setBorder(null);
 		// Ensure it is not editable.

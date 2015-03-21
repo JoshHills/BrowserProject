@@ -4,12 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.border.EmptyBorder;
 
 /**
  * @author Josh Hills
@@ -26,7 +28,7 @@ public class Ribbon {
 	private JPanel ribbon;
 	
 	// Declare a Layout Manager for fine-tuned positioning of inner components.
-	private FlowLayout fl;
+	private BoxLayout bl;
 	
 	// Buttons to be placed on the ribbon.
 	private JButton logoBtn, backBtn, forwardBtn, refreshBtn, goBtn, homeBtn, optsBtn;
@@ -46,10 +48,16 @@ public class Ribbon {
 		
 		/* Set-up ribbon with properties. */
 		
-		// Create layout.
-		fl = new FlowLayout();		
 		// Create ribbon.
-		ribbon = new JPanel(fl);
+		ribbon = new JPanel();
+		// Create layout.
+		bl = new BoxLayout(ribbon, BoxLayout.LINE_AXIS);
+		// Set the ribbon's layout manager.
+		ribbon.setLayout(bl);
+		
+		ribbon.setBorder(new EmptyBorder(5,5,5,5));
+		
+		ribbon.setOpaque(false);
 		
 		/* Logo (about) button. */
 		
@@ -219,7 +227,7 @@ public class Ribbon {
 		JMenuItem newIncognitoWindow = new JMenuItem("New Incognito Window");
 		// Set its mnemonic.
 		newIncognitoWindow.setMnemonic(KeyEvent.VK_I);
-		// Add it's action listener- if clicked...
+		// Add its action listener- if clicked...
 		newIncognitoWindow.addActionListener(new ActionListener() {
 
 			@Override
@@ -234,8 +242,27 @@ public class Ribbon {
 		// Add it to the menu.
 		optsMenu.add(newIncognitoWindow);
 		
-		// Add a separator.
+		// Add a separator to the menu.
 		optsMenu.addSeparator();
+		
+		// Create a new bookmark item.
+		JMenuItem addBookmark = new JMenuItem("Add Bookmark");
+		// Set it's mnemonic.
+		addBookmark.setMnemonic(KeyEvent.VK_A);
+		// Add its action listener- if clicked...
+		addBookmark.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				// Open the form to create a new bookmark.
+				Browser.getInstance().getBmManager().displayBookmarkForm();
+				
+			}
+			
+		});
+		// Add it to the menu.
+		optsMenu.add(addBookmark);
 		
 		// Create an 'options' button.
 		optsBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/OptsBtn/placeholder.png"));

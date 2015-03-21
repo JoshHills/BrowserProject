@@ -67,7 +67,7 @@ public class Browser {
 	/* Important context-specific state objects. */
 	
 	// Declare an object to manage the browser's 'Bookmark' object related operations.
-	private BookmarksManager bmManager;
+	private BookmarksManager bmManager = new BookmarksManager();
 	// Stored collection of user's browser bookmarks.
 	private List<Bookmark> bookmarks = new ArrayList<Bookmark>();
 	

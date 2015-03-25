@@ -5,6 +5,8 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
@@ -30,7 +32,7 @@ import javax.swing.JTextField;
  */
 public class Driver {
 
-	public static void main(String[] args) throws MalformedURLException {
+	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {
 		
 		/* Test bookmarks.
 		
@@ -74,7 +76,7 @@ public class Driver {
 							nameOf.getText(), new URL("http://www.google.com/"));
 					window.add(bm.getJComponent());			
 				} catch (MalformedURLException e1) {
-					// TODO Auto-generated catch block
+					
 					e1.printStackTrace();
 				}
 					
@@ -102,10 +104,14 @@ public class Driver {
 		
 		window.setVisible(true);
 		*/
-		
+		/*
 		Date date = new Date();
 		
-		System.out.println(date.toString());
+		System.out.println(date.toString()); */
+		
+		Date lel = new Date();
+		
+		String filePath = "C:\\Users\\Josh Hills\\Documents\\dateobj.ser";
 		
 	}
 

@@ -1,4 +1,3 @@
-
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
@@ -130,6 +129,11 @@ public class Page implements HyperlinkListener {
 				// Display the page in the viewport.
 				page.setPage(url);
 				
+				// If a 'back' operation has just occurred, reposition the iterator.
+				if(iterator.hasNext() && visited.get(iterator.nextIndex()).equals(currentURL)) {
+					iterator.next();
+				}
+				
 				// If the index is not at the current page, remove the following visited links.
 				while(iterator.hasNext()) {
 					
@@ -140,6 +144,8 @@ public class Page implements HyperlinkListener {
 					iterator.remove();
 					
 				}
+				
+				/* Log and update. */
 				
 				// Log page in temporary history.
 				iterator.add(url);

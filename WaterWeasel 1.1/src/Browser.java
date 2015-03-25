@@ -30,6 +30,8 @@ import javax.swing.JFrame;
  * construction of the main windows.
  */
 public class Browser {
+	
+	//TODO Make file constants!
 
 	// Browser name is a constant.
 	private final String BROWSER_NAME = "WaterWeasel";
@@ -41,7 +43,9 @@ public class Browser {
 	private static Browser instance;
 	
 	/* Global default settings. */
-
+	
+	// Path to settings file.
+	private final String SETTINGS_FILE_PATH = "Assets/UserSettings/settings.cfg";
 	// Initial window size.
 	private final int DEFAULT_SIZE = 500;
 	// State of window locking.
@@ -111,7 +115,12 @@ public class Browser {
 	protected Browser() {
 	
 		// Attempt to set-up this 'Browser' instance with centralised user-settings.
-		load();
+		try {
+			load();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 			
 	}
 	
@@ -155,105 +164,70 @@ public class Browser {
 	 */
 	
 	/**
-	 * Method decrypts, loads and initialises fields from necessary files. 
+	 * Method loads and initialises fields and objects from necessary files. 
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 */
-	void load() {
+	private void load() {
 		
-		// Store state of errors for dialogue display and perseverance.
-		boolean failed;
+		/* Load general user settings. */
 		
-		/* Load general user-settings. */
-				
-		// Create a properties object to store a reference to the supposed configuration file.
-		Properties settingsTxt = new Properties();
-		// Attempt to access the file.
-		try {
+		// If the settings file does not exist...
+		if(!FileMediator.fileExists(SETTINGS_FILE_PATH)) {
 			
-			settingsTxt.load(new FileInputStream("Assets/UserSettings/settings.cfg"));
 			
-			/* Check for settings! */
-			
-			if(settingsTxt.containsKey("xSize")) {
-				// Cast the unknown object value from key to a String to be parsed.
-				xSize = Integer.parseInt((String) settingsTxt.get("xSize"));
-			}
-			else {
-				// Log that something failed.
-				failed = true;
-				// Revert user setting to default.
-				xSize = DEFAULT_SIZE;
-			}
-			
-			if(settingsTxt.containsKey("ySize")) {
-				// Cast the unknown object value from key to a String to be parsed.
-				ySize = Integer.parseInt((String) settingsTxt.get("ySize"));
-			}
-			else {
-				// Log that something failed.
-				failed = true;
-				// Revert user setting to default.
-				ySize = DEFAULT_SIZE;
-			}
-			
-			if(settingsTxt.containsKey("maximised")) {
-				// Cast the unknown object value from key to a String to be parsed.
-				maximised = Boolean.parseBoolean((String) settingsTxt.get("maximised"));
-			}
-			else {
-				// Log that something failed.
-				failed = true;
-				// Revert user setting to default.
-				maximised = DEFAULT_MAXIMISED;
-			}
-			
-			if(settingsTxt.containsKey("theme")) {
-				// Cast the unknown object value from key to a String to be parsed.
-				String temp = (String) settingsTxt.get("theme");
-				// Split the RGB values into an array.
-				String[] tempa = temp.split(",");
-				// Assuming the right amount of values...
-				if(tempa.length == 3) {
-					theme = new Color(Integer.parseInt(tempa[0]),
-							Integer.parseInt(tempa[1]),
-							Integer.parseInt(tempa[2]));
-				}
-				// Otherwise log that something failed.
-				else {
-					failed = true;
-					// Revert user setting to default.
-					theme = DEFAULT_THEME;
-				}
-			}
-			else {
-				// Log that something failed.
-				failed = true;
-				// Revert user setting to default.
-				theme = DEFAULT_THEME;
-			}
-			
-			if(settingsTxt.containsKey("homepage")) {
-				// Cast the unknown object value from key to a String to be converted to an URL.
-				homepage = makeURL((String) settingsTxt.get("homepage"));
-			}
-			else {
-				// Log that something failed.
-				failed = true;
-				// Revert user setting to default.
-				homepage = DEFAULT_HOMEPAGE;
-			}
 			
 		}
-		// If something failed fatally, revert all settings to defaults.
-		catch (IOException | NumberFormatException e) {
-			System.out.println("AAGH");
-		}
 		
+		// Assert that the settings file (still) exists.
+		File settingsFile = FileMediator.assertFile(SETTINGS_FILE_PATH);
+		
+		// Read properties from file using necessary casting and conversion methods, reverting to defaults if they cannot be found...
+		xSize 		= FileMediator.getProperty("width", settingsFile) != null ? 
+						Integer.parseInt(FileMediator.getProperty("xSize", settingsFile)) : DEFAULT_SIZE;
+		ySize 		= FileMediator.getProperty("height", settingsFile) != null ? 
+						Integer.parseInt(FileMediator.getProperty("ySize", settingsFile)) : DEFAULT_SIZE;
+		maximised 	= FileMediator.getProperty("fullscreen", settingsFile) != null ?
+						Boolean.parseBoolean(FileMediator.getProperty("maximised", settingsFile)) : DEFAULT_MAXIMISED;
+		theme		= FileMediator.getProperty("theme", settingsFile) != null ?
+						new Color(Integer.parseInt(FileMediator.getProperty("theme", settingsFile))) : DEFAULT_THEME;
+		homepage	= FileMediator.getProperty("homepage", settingsFile) != null ?
+						makeURL(FileMediator.getProperty("homepage", settingsFile)) : DEFAULT_HOMEPAGE;
+								
 	}
 	
 	/**
-	 * Method encrypts and saves fields to necessary files.
+	 * 
 	 */
-	void save() {
+	public void close() throws FileNotFoundException, IOException {
+	
+		/* Save general user settings. */
+		
+		// Assert that the settings file (still) exists.
+		File settingsFile = FileMediator.assertFile(SETTINGS_FILE_PATH);
+		
+		// Write properties to file.
+		FileMediator.setProperty("width", xSize, settingsFile);
+		FileMediator.setProperty("height", ySize, settingsFile);
+		FileMediator.setProperty("fullscreen", maximised, settingsFile);
+		FileMediator.setProperty("theme", theme.getRGB(), settingsFile);
+		FileMediator.setProperty("homepage", homepage, settingsFile);
+		
+	}
+	
+	
+	private void initSettings() {
+		
+		// Create settings file.
+		File settingsFile = FileMediator.assertFile(SETTINGS_FILE_PATH);
+					
+		/* Write default settings. */
+					
+		FileMediator.setProperty("xSize", DEFAULT_SIZE, settingsFile);
+		FileMediator.setProperty("ySize", DEFAULT_SIZE, settingsFile);
+		FileMediator.setProperty("maximized", DEFAULT_MAXIMISED, settingsFile);
+		FileMediator.setProperty("theme", DEFAULT_THEME, settingsFile);
+		FileMediator.setProperty("homepage", DEFAULT_HOMEPAGE, settingsFile);
 		
 	}
 	

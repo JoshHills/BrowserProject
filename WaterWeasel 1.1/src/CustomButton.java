@@ -63,10 +63,8 @@ public class CustomButton {
 	 */
 	public static JButton createButton(ImageIcon image, ImageIcon imageOver) {
 		
-		// Create button without formatting.
-		JButton btn = createVanillaBtn();
-		// Set button image.
-		btn.setIcon(image);
+		// Call above method.
+		JButton btn = createButton(image);
 		// Set button-over image.
 		btn.setRolloverIcon(imageOver);
 		
@@ -84,12 +82,8 @@ public class CustomButton {
 	 */
 	public static JButton createButton(ImageIcon image, ImageIcon imageOver, ImageIcon imageDown) {
 		
-		// Create button without formatting.
-		JButton btn = createVanillaBtn();
-		// Set button image.
-		btn.setIcon(image);
-		// Set button-over image.
-		btn.setRolloverIcon(imageOver);
+		// Call above method.
+		JButton btn = createButton(image, imageOver);
 		// Set button-down image.
 		btn.setPressedIcon(imageDown);
 		
@@ -108,14 +102,8 @@ public class CustomButton {
 	 */
 	public static JButton createButton(ImageIcon image, ImageIcon imageOver, ImageIcon imageDown, ImageIcon imageDisabled) {
 		
-		// Create button without formatting.
-		JButton btn = createVanillaBtn();
-		// Set button image.
-		btn.setIcon(image);
-		// Set button-over image.
-		btn.setRolloverIcon(imageOver);
-		// Set button-down image.
-		btn.setPressedIcon(imageDown);
+		// Call above method.
+		JButton btn = createButton(image, imageOver, imageDown);
 		// Set button-disabled image.
 		btn.setDisabledIcon(imageDisabled);
 		

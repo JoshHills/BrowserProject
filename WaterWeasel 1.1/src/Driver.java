@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
@@ -109,9 +110,15 @@ public class Driver {
 		
 		System.out.println(date.toString()); */
 		
-		Date lel = new Date();
+		// JOptionPane.showMessageDialog(new JFrame(),  "hello", "elele", JOptionPane.WARNING_MESSAGE);
 		
-		String filePath = "C:\\Users\\Josh Hills\\Documents\\dateobj.ser";
+		int xSize;
+		// Assert that the settings file (still) exists.
+				File settingsFile = FileMediator.assertFile(Browser.SETTINGS_FILE_PATH);
+				
+		xSize = Integer.parseInt(FileMediator.getProperty("xSize", settingsFile));
+		
+		System.out.println(xSize);
 		
 	}
 

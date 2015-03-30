@@ -123,8 +123,8 @@ public class FileMediator {
 	/**
 	 * This method loads an object stored at the specified file path.
 	 * 
-	 * @param filePath	The determined path to the stored object.
-	 * @return			The object read from the file.
+	 * @param filePath					The determined path to the stored object.
+	 * @return							The object read from the file.
 	 * @throws IOException 				If it cannot interact with the specified file.
 	 * @throws FileNotFoundException	If the specified file cannot be found.
 	 * @throws ClassNotFoundException	If there is no such class pertaining to the object.
@@ -142,8 +142,8 @@ public class FileMediator {
 	/**
 	 * This method writes a 'serializable' object to a specified file path. 
 	 * 
-	 * @param object	The object to be stored.
-	 * @param filePath	The determined path to the stored object.
+	 * @param object					The object to be stored.
+	 * @param filePath					The determined path to the stored object.
 	 * @throws IOException 				If it cannot interact with the specified file.
 	 * @throws FileNotFoundException	If the specified file cannot be found.
 	 */

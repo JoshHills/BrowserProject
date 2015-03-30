@@ -1,5 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +46,32 @@ public class Window {
 		
 		// Initialise 'JFrame' variable to an object (window) with the browser's name at the top.
 		frame = new JFrame(Browser.getInstance().getBROWSER_NAME());
-		// Set the window's default close action.
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// Add a window adapter to deal with the closing of this window.
+		frame.addWindowListener(new WindowAdapter() {
+			
+			public void windowClosing(WindowEvent e) {
+				
+				// If this is not the last open window...
+				if(Browser.getInstance().getWindows().size() != 1) {
+					
+					// Dispose of the window properly.
+					frame.setVisible(false);
+					frame.dispose();					
+					// Remove this window.
+					Browser.getInstance().getWindows().remove(this);
+					
+				}
+				// If it is...
+				else {
+				
+					// Pass control to the upper management layer to close program properly.
+					Browser.getInstance().close();
+				
+				}
+				
+			}
+			
+		});
 		// Set the window's initial size.
 		frame.setSize(Browser.getInstance().getxSize(), Browser.getInstance().getySize());
 		// Set the window's initial extended state.

@@ -16,6 +16,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  * @author Josh Hills
@@ -44,8 +45,10 @@ public class Browser {
 	
 	/* Global default settings. */
 	
-	// Path to settings file.
-	private final String SETTINGS_FILE_PATH = "Assets/UserSettings/settings.cfg";
+	// Paths to settings files.
+	final static String SETTINGS_FILE_PATH = "Assets/UserSettings/settings.cfg";
+	private final String HISTORY_FILE_PATH = "Assets/UserSettings/history.txt";
+	private final String BOOKMARKS_FILE_PATH = "Assets/UserSettings/bookmarks.txt";
 	// Initial window size.
 	private final int DEFAULT_SIZE = 500;
 	// State of window locking.
@@ -73,10 +76,10 @@ public class Browser {
 	// Declare an object to manage the browser's 'Bookmark' object related operations.
 	private BookmarksManager bmManager = new BookmarksManager();
 	// Stored collection of user's browser bookmarks.
-	private List<Bookmark> bookmarks = new ArrayList<Bookmark>();
+	private List<Bookmark> bookmarks;
 	
 	// Stored persistent user-history.
-	private SortedMap<Date, URL> history = new TreeMap<Date, URL>();
+	private SortedMap<Date, URL> history;
 	
 	// List of currently active windows.
 	private List<Window> windows = new ArrayList<Window>();
@@ -87,14 +90,14 @@ public class Browser {
 	 */
 	public static void main(String[] args) {
 		
-		// Add and therefore create a new browser window.
+		// Instantiate the browser with a new window.
 		Browser.getInstance().add();
 		
 	}
 	
 	/**
-	 * Method models the Singleton design pattern, which itself
-	 * provides over-arching management of all open windows.
+	 * Method models the Singleton design pattern, which serves to
+	 * provide over-arching management of all open windows.
 	 * 
 	 * @return	The only available instance of a 'Browser' object.
 	 */
@@ -105,7 +108,7 @@ public class Browser {
 			// Create one.
 			instance = new Browser();
 		}
-		// Return it regardless.
+		// Return instance of 'Browser'.
 		return instance;
 	}
 	
@@ -114,13 +117,8 @@ public class Browser {
 	 */
 	protected Browser() {
 	
-		// Attempt to set-up this 'Browser' instance with centralised user-settings.
-		try {
-			load();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// Load local settings into the program.
+		load();
 			
 	}
 	
@@ -140,94 +138,205 @@ public class Browser {
 	public void add(boolean incognito) {
 		
 		// Add a window the 'Browser'.
-		Browser.getInstance().getWindows().add(new Window());
+		add();
 
 		// Set its privacy.
 		Browser.getInstance().getWindows().get(
 				Browser.getInstance().getWindows().size() - 1).makeIncognito(incognito);
 		
 	}
-		
-	/*
-	 * Due to the small scope of the project, the interactions with the settings files
-	 * are currently quite discrete and specific, however this could be easily generalised
-	 * with a 'mediator' class should the program be expanded.
-	 * 
-	 * As it stands, I have used a variety of appropriate I/O methods to showcase understanding
-	 * of their concepts- the general settings do not require encryption but the file format 
-	 * lends itself well to iteration, whereas the other personal and dynamic files can be
-	 * read/wrote in a more simplified manner, but would require higher levels of protection-
-	 * this is reflected in my choice of code.
-	 * 
-	 * The storage of the elements within the files themselves follows good formatting practice
-	 * as defined by the Java documentation- as such, they work to a flexible degree.
-	 */
 	
 	/**
-	 * Method loads and initialises fields and objects from necessary files. 
-	 * @throws IOException 
-	 * @throws FileNotFoundException 
+	 * Method loads and initialises fields and objects from necessary files.
 	 */
 	private void load() {
 		
-		/* Load general user settings. */
+		// Catch-all boolean value stores state of failure.
+		boolean somethingWrong = false;
 		
-		// If the settings file does not exist...
-		if(!FileMediator.fileExists(SETTINGS_FILE_PATH)) {
-			
-			
-			
-		}
+		/* Load general user settings. */
 		
 		// Assert that the settings file (still) exists.
 		File settingsFile = FileMediator.assertFile(SETTINGS_FILE_PATH);
 		
 		// Read properties from file using necessary casting and conversion methods, reverting to defaults if they cannot be found...
-		xSize 		= FileMediator.getProperty("width", settingsFile) != null ? 
-						Integer.parseInt(FileMediator.getProperty("xSize", settingsFile)) : DEFAULT_SIZE;
-		ySize 		= FileMediator.getProperty("height", settingsFile) != null ? 
-						Integer.parseInt(FileMediator.getProperty("ySize", settingsFile)) : DEFAULT_SIZE;
-		maximised 	= FileMediator.getProperty("fullscreen", settingsFile) != null ?
-						Boolean.parseBoolean(FileMediator.getProperty("maximised", settingsFile)) : DEFAULT_MAXIMISED;
-		theme		= FileMediator.getProperty("theme", settingsFile) != null ?
-						new Color(Integer.parseInt(FileMediator.getProperty("theme", settingsFile))) : DEFAULT_THEME;
-		homepage	= FileMediator.getProperty("homepage", settingsFile) != null ?
-						makeURL(FileMediator.getProperty("homepage", settingsFile)) : DEFAULT_HOMEPAGE;
+		try {
+			
+			xSize 		= FileMediator.getProperty("width", settingsFile) != null ? 
+							Integer.parseInt(FileMediator.getProperty("width", settingsFile)) : DEFAULT_SIZE;
+			ySize 		= FileMediator.getProperty("height", settingsFile) != null ? 
+							Integer.parseInt(FileMediator.getProperty("height", settingsFile)) : DEFAULT_SIZE;
+			maximised 	= FileMediator.getProperty("fullscreen", settingsFile) != null ?
+							Boolean.parseBoolean(FileMediator.getProperty("fullscreen", settingsFile)) : DEFAULT_MAXIMISED;
+			theme		= FileMediator.getProperty("theme", settingsFile) != null ?
+							new Color(Integer.parseInt(FileMediator.getProperty("theme", settingsFile))) : DEFAULT_THEME;
+			homepage	= FileMediator.getProperty("homepage", settingsFile) != null ?
+							makeURL(FileMediator.getProperty("homepage", settingsFile)) : DEFAULT_HOMEPAGE;
+		
+		} catch (NumberFormatException | IOException e) {
+			
+			// If an error occurred, revert settings to defaults.
+			initSettings();
+			// Log that something bad happened!
+			somethingWrong = true;
+			
+		}
+									
+		/* Load user history. */
+		
+		// Attempt to load the history collection.
+		try {
+			
+			// Cast the object loaded into the appropriate type.
+			history = (TreeMap<Date, URL>) FileMediator.loadObject(HISTORY_FILE_PATH);
+		
+		} catch (ClassNotFoundException | IOException e) {
+			
+			// Otherwise default it.
+			history = new TreeMap<Date, URL>();
+			// Log that something bad happened!
+			somethingWrong = true;
+		
+		}
+		
+		/* Load user's bookmarks. */
+		
+		// Attempt to load the bookmark collection.
+		try {
+			
+			// Cast the object loaded into the appropriate type.
+			bookmarks = (ArrayList<Bookmark>) FileMediator.loadObject(BOOKMARKS_FILE_PATH);
+		
+		} catch (ClassNotFoundException | IOException e) {
+			
+			// Otherwise default it.
+			bookmarks = new ArrayList<Bookmark>();
+			// Log that something bad happened!
+			somethingWrong = true;
+			
+		}
+		
+		// If an error occurred during any of the processes, drive relevant method.
+		if(somethingWrong) {
+			
+			// Inform the user via the UI of what has happened.
+			alertError();
+			
+		}
 								
 	}
 	
 	/**
 	 * 
 	 */
-	public void close() throws FileNotFoundException, IOException {
-	
+	public void close() {
+		
+		// Catch-all boolean value stores state of failure.
+		boolean somethingWrong = false;
+		
 		/* Save general user settings. */
 		
 		// Assert that the settings file (still) exists.
 		File settingsFile = FileMediator.assertFile(SETTINGS_FILE_PATH);
 		
-		// Write properties to file.
-		FileMediator.setProperty("width", xSize, settingsFile);
-		FileMediator.setProperty("height", ySize, settingsFile);
-		FileMediator.setProperty("fullscreen", maximised, settingsFile);
-		FileMediator.setProperty("theme", theme.getRGB(), settingsFile);
-		FileMediator.setProperty("homepage", homepage, settingsFile);
+		// Write properties that have likely changed during run-time to file.
+		try {
+		
+			FileMediator.setProperty("width", xSize, settingsFile);
+			FileMediator.setProperty("height", ySize, settingsFile);
+			FileMediator.setProperty("fullscreen", maximised, settingsFile);
+			FileMediator.setProperty("theme", theme.getRGB(), settingsFile);
+			FileMediator.setProperty("homepage", homepage, settingsFile);
+		
+		} catch(IOException e) {
+			
+			// If a fatal error occurs while loading, revert to defaults.
+			initSettings();
+			
+		}
+		
+		/* Save user history. */
+		
+		// Attempt to save the history collection.
+		try {
+			
+			FileMediator.saveObject(history, HISTORY_FILE_PATH);
+		
+		} catch (IOException e) {
+		
+			// Log that something bad happened!
+			somethingWrong = true;
+			
+		}
+		
+		/* Save user bookmarks. */
+		
+		// Attempt to save the bookmarks collection.
+		try {
+			
+			FileMediator.saveObject(bookmarks, BOOKMARKS_FILE_PATH);
+			
+		} catch (IOException e) {
+			
+			// Log that something bad happened!
+			somethingWrong = true;
+			
+		}
+		
+		// If an error occurred during any of the processes, drive relevant method.
+		if(somethingWrong) {
+			
+			// Inform the user via the UI of what has happened.
+			alertError();
+			
+		}
+		
+		/* Exit program. */
+		
+		// Close window properly.
+		windows.get(0).getComponent().setVisible(false);
+		windows.get(0).getComponent().dispose();
+		
+		// End processes.
+		System.exit(0);
 		
 	}
 	
-	
+	/**
+	 * This method constructs a configuration file and writes
+	 * program defaults to it to be acted upon.
+	 */
 	private void initSettings() {
 		
 		// Create settings file.
 		File settingsFile = FileMediator.assertFile(SETTINGS_FILE_PATH);
-					
+			
 		/* Write default settings. */
-					
-		FileMediator.setProperty("xSize", DEFAULT_SIZE, settingsFile);
-		FileMediator.setProperty("ySize", DEFAULT_SIZE, settingsFile);
-		FileMediator.setProperty("maximized", DEFAULT_MAXIMISED, settingsFile);
-		FileMediator.setProperty("theme", DEFAULT_THEME, settingsFile);
-		FileMediator.setProperty("homepage", DEFAULT_HOMEPAGE, settingsFile);
+		
+		/*
+		 * By this point, there is no conceivably logical way the program could be throwing errors
+		 * as a result of itself- nonetheless, an empty try/catch is necessary here for compilation.
+		 */
+		try {
+			
+			FileMediator.setProperty("width", DEFAULT_SIZE, settingsFile);
+			FileMediator.setProperty("height", DEFAULT_SIZE, settingsFile);
+			FileMediator.setProperty("fullscreen", DEFAULT_MAXIMISED, settingsFile);
+			FileMediator.setProperty("theme", DEFAULT_THEME, settingsFile);
+			FileMediator.setProperty("homepage", DEFAULT_HOMEPAGE, settingsFile);
+		
+		} catch (IOException e) {}
+		
+	}
+	
+	/**
+	 * Handle errors in a browser-specific way; alert the user as to what has happened.
+	 */
+	private void alertError() {
+		
+		// Display a dialog alerting the user of the problem.
+		JOptionPane.showMessageDialog(null, "Something went wrong while interacting with your browser's local files;\n"
+				+ "we've done our best to fix it.", "Oops!", JOptionPane.WARNING_MESSAGE);
 		
 	}
 	
@@ -242,11 +351,15 @@ public class Browser {
 	public static URL makeURL(String url) {
 		
 		try {
+			
 			// Attempt to return a new URL from the String.
 			return new URL(url);
+		
 		} catch (java.net.MalformedURLException e) {
+			
 			// Otherwise...
 			return null;
+		
 		}
 		
 	}
@@ -262,11 +375,15 @@ public class Browser {
 	public static URL makeURL(File file) {
 		
 		try {
+			
 			// Attempt to return a new URL from the File.
 			return file.toURI().toURL();
+		
 		} catch (java.net.MalformedURLException e) {
+		
 			// Otherwise...
 			return null;
+		
 		}
 		
 	}

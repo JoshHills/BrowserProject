@@ -31,8 +31,6 @@ import javax.swing.JOptionPane;
  * construction of the main windows.
  */
 public class Browser {
-	
-	//TODO Make file constants!
 
 	// Browser name is a constant.
 	private final String BROWSER_NAME = "WaterWeasel";
@@ -64,6 +62,8 @@ public class Browser {
 	
 	// Saved user initial window size.
 	private int xSize, ySize;
+	// Saved user initial window position.
+	private int xPos, yPos;
 	// Saved user state of window locking.
 	private boolean maximised;
 	// Saved user overall browser theme.
@@ -113,7 +113,7 @@ public class Browser {
 	}
 	
 	/**
-	 * Constructor is protected; this prevents an inner-component from creating another instance.
+	 * Constructor is protected; this prevents a component from creating another instance.
 	 */
 	protected Browser() {
 	
@@ -149,6 +149,7 @@ public class Browser {
 	/**
 	 * Method loads and initialises fields and objects from necessary files.
 	 */
+	@SuppressWarnings("unchecked")
 	private void load() {
 		
 		// Catch-all boolean value stores state of failure.
@@ -166,6 +167,10 @@ public class Browser {
 							Integer.parseInt(FileMediator.getProperty("width", settingsFile)) : DEFAULT_SIZE;
 			ySize 		= FileMediator.getProperty("height", settingsFile) != null ? 
 							Integer.parseInt(FileMediator.getProperty("height", settingsFile)) : DEFAULT_SIZE;
+			xPos 		= FileMediator.getProperty("left", settingsFile) != null ? 
+					Integer.parseInt(FileMediator.getProperty("left", settingsFile)) : 0;
+			yPos 		= FileMediator.getProperty("top", settingsFile) != null ? 
+					Integer.parseInt(FileMediator.getProperty("top", settingsFile)) : 0;
 			maximised 	= FileMediator.getProperty("fullscreen", settingsFile) != null ?
 							Boolean.parseBoolean(FileMediator.getProperty("fullscreen", settingsFile)) : DEFAULT_MAXIMISED;
 			theme		= FileMediator.getProperty("theme", settingsFile) != null ?
@@ -227,9 +232,10 @@ public class Browser {
 	}
 	
 	/**
-	 * 
+	 * Method to be called indeterminately, responsive to user interaction,
+	 * saves fields and objects from necessary files.
 	 */
-	public void close() {
+	public void save() {
 		
 		// Catch-all boolean value stores state of failure.
 		boolean somethingWrong = false;
@@ -244,6 +250,8 @@ public class Browser {
 		
 			FileMediator.setProperty("width", xSize, settingsFile);
 			FileMediator.setProperty("height", ySize, settingsFile);
+			FileMediator.setProperty("left", xPos, settingsFile);
+			FileMediator.setProperty("top", yPos, settingsFile);
 			FileMediator.setProperty("fullscreen", maximised, settingsFile);
 			FileMediator.setProperty("theme", theme.getRGB(), settingsFile);
 			FileMediator.setProperty("homepage", homepage, settingsFile);
@@ -291,14 +299,51 @@ public class Browser {
 			
 		}
 		
-		/* Exit program. */
+	}
+	
+	/**
+	 * 
+	 */
+	public void close(JFrame frame) {
+			
+		// Update state-variables to 'remember' user's preferences.
+		xSize = frame.getWidth();
+		ySize = frame.getHeight();
+		xPos = frame.getX();
+		yPos = frame.getY();
+		if(frame.getExtendedState() == JFrame.MAXIMIZED_BOTH) {
+			
+			maximised = true;
+			
+		}
+		else maximised = false;
+		
+		// Remove the window from the browser and then dispose of it.
+		for(int i = 0; i < windows.size(); i++) {
+			
+			// Find the correct window based on their component equivalence.
+			if(windows.get(i).getComponent() == frame) {
+				
+				windows.remove(i);
+				
+			}
+			
+		}
 		
 		// Close window properly.
-		windows.get(0).getComponent().setVisible(false);
-		windows.get(0).getComponent().dispose();
+		frame.setVisible(false);
+		frame.dispose();
 		
-		// End processes.
-		System.exit(0);
+		// Save preferences.
+		save();
+		
+		// If there are no more windows left...
+		if(windows.size() == 0) {
+			
+			// Exit program.
+			System.exit(0);
+			
+		}
 		
 	}
 	
@@ -321,11 +366,17 @@ public class Browser {
 			
 			FileMediator.setProperty("width", DEFAULT_SIZE, settingsFile);
 			FileMediator.setProperty("height", DEFAULT_SIZE, settingsFile);
+			FileMediator.setProperty("left", 0, settingsFile);
+			FileMediator.setProperty("top", 0, settingsFile);
 			FileMediator.setProperty("fullscreen", DEFAULT_MAXIMISED, settingsFile);
 			FileMediator.setProperty("theme", DEFAULT_THEME, settingsFile);
 			FileMediator.setProperty("homepage", DEFAULT_HOMEPAGE, settingsFile);
 		
-		} catch (IOException e) {}
+		} catch (IOException e) {
+			
+			alertError();
+			
+		}
 		
 	}
 	
@@ -349,6 +400,8 @@ public class Browser {
 	 * @return			A new URL object if successful.
 	 */
 	public static URL makeURL(String url) {
+		
+		
 		
 		try {
 			
@@ -402,12 +455,20 @@ public class Browser {
 		return DEFAULT_PRIVATE_THEME;
 	}
 
-	public int getxSize() {
+	public int getXSize() {
 		return xSize;
 	}
 
-	public int getySize() {
+	public int getYSize() {
 		return ySize;
+	}
+	
+	public int getXPosition() {
+		return xPos;
+	}
+
+	public int getYPosition() {
+		return yPos;
 	}
 
 	public boolean isMaximised() {

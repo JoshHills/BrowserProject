@@ -171,7 +171,7 @@ public class Ribbon {
 							Browser.getInstance().getHomepage());
 				// Ensure the text in the address field updates correctly.
 				searchBar.getAddressField().setText(Browser.getInstance().getHomepage().toString());
-			
+				
 			}
 			
 		});

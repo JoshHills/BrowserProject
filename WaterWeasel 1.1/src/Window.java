@@ -51,29 +51,16 @@ public class Window {
 			
 			public void windowClosing(WindowEvent e) {
 				
-				// If this is not the last open window...
-				if(Browser.getInstance().getWindows().size() != 1) {
-					
-					// Dispose of the window properly.
-					frame.setVisible(false);
-					frame.dispose();					
-					// Remove this window.
-					Browser.getInstance().getWindows().remove(this);
-					
-				}
-				// If it is...
-				else {
-				
-					// Pass control to the upper management layer to close program properly.
-					Browser.getInstance().close();
-				
-				}
+				// Pass the frame from this window to the close operation.
+				Browser.getInstance().close(frame);
 				
 			}
 			
 		});
 		// Set the window's initial size.
-		frame.setSize(Browser.getInstance().getxSize(), Browser.getInstance().getySize());
+		frame.setSize(Browser.getInstance().getXSize(), Browser.getInstance().getYSize());
+		// Set the window's initial position.
+		frame.setLocation(Browser.getInstance().getXPosition(), Browser.getInstance().getYPosition());
 		// Set the window's initial extended state.
 		if(Browser.getInstance().isMaximised()) {
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);

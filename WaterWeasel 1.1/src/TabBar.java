@@ -12,22 +12,25 @@ import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.BadLocationException;
 
 /**
  * @author Josh Hills
+ *
+ * This class models a browser's tab bar for displaying active open pages.
  * 
  * Model for adding a close button to the tab-bar inspired by a tutorial of 'java2s'
  * at 'http://www.java2s.com/Tutorial/Java/0240__Swing/AddButtontotabbar.htm'.
- *
- * This class models a browser's tab bar for displaying active open pages.
  */
 public class TabBar {
 	
 	/* IMPORTANT NOTE: A USE FOR QUEUES COULD BE FOR TEMPORARY STORAGE OF CLOSED TABS. */
+	
 	
 	// Parent reference.
 	private Window window;
@@ -50,6 +53,7 @@ public class TabBar {
 		
 		// Instantiate the tabbed pane.
 		tabBar = new JTabbedPane();
+		// Make the tabs scroll horizontally when there are too many.
 		tabBar.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		// Add the first tab to display.
 		add();
@@ -88,8 +92,8 @@ public class TabBar {
 	}
 	
 	/**
-	 * Method handles the sophisticated initialisation of the inner components of a new tab-
-	 * this includes scraping the active web-page's name and creating a close button.
+	 * Method handles the initialisation of the inner components of a new tab-
+	 * this includes creating and adding a title and a close button.
 	 */
 	private JPanel createTabPanel() {
 		
@@ -102,9 +106,8 @@ public class TabBar {
 		
 		/* Tab title. */
 		
-		// Give it a title.
-		/* CALL FUNCTION HERE TO GRAB WEB-PAGE <title> TAG CONTENT! TEMPORARY ONE BELOW. */
-		tabPanel.add(new JLabel("Tab " + pages.size()));
+		// Add a temporary title to be updated by the change listener applied to the page.
+		tabPanel.add(new JLabel("Loading..."));
 		
 		/* Close button. */
 		
@@ -116,26 +119,39 @@ public class TabBar {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				// Retrieve the specific source button.
-				JButton source = (JButton) e.getSource();
-				
-				// Loop through the all open tabs.
-				for(int i = 0; i < tabBar.getTabCount(); i++) {
+				// If the user is closing the last tab.
+				if(tabBar.getTabCount() == 1) {
 					
-					// Grab the tab panel of the currently selected tab.
-					JPanel pnl = (JPanel) tabBar.getTabComponentAt(i);
-					// Grab the button from the panel.
-					JButton btn = (JButton) pnl.getComponent(1);
-					// If this is the button that has been clicked...
-					if(btn == source) {
+					Browser.getInstance().close(window.getComponent());
+					
+				}
+				else {
+				
+					// Retrieve the specific source button.
+					JButton source = (JButton) e.getSource();
+					
+					// Loop through the all open tabs.
+					for(int i = 0; i < tabBar.getTabCount(); i++) {
 						
-						// Remove the tab from the GUI.
-						tabBar.removeTabAt(i);
-						// Remove the page from memory.				
-						pages.remove(i);
-						
-						// Update the text in the address field.
-						window.getRibbon().getSearchBar().updateAddress();
+						// Grab the tab panel of the currently selected tab.
+						JPanel pnl = (JPanel) tabBar.getTabComponentAt(i);
+						// Grab the button from the panel.
+						JButton btn = (JButton) pnl.getComponent(1);
+						// If this is the button that has been clicked...
+						if(btn == source) {
+							
+							// Remove the tab from the GUI.
+							tabBar.removeTabAt(i);
+							// Remove the page from memory.				
+							pages.remove(i);
+							
+							// Update the text in the address field.
+							window.getRibbon().getSearchBar().updateAddress();
+							
+							// Now finished, end loop.
+							break;
+							
+						}
 						
 					}
 					
@@ -153,16 +169,37 @@ public class TabBar {
 	}
 	
 	/**
-	 * This method acts as a pseudo change-event, insomuch as it is called in various circumstances
-	 * where the tab bar has been updated and therefore the title of the active tab must reflect this-
-	 * it removes boilerplate code.
+	 * This method updates the title of the tab.
+	 * 
+	 * @param page	The page that has finished loading.
 	 */
-	public void updateTab() {
+	public void updateTab(JEditorPane page) {
 		
-		
+		// Loop through the all open tabs.
+		for(int i = 0; i < tabBar.getTabCount(); i++) {
+			
+			// Temporarily select and cast the component being displayed in the tab.
+			JScrollPane componentInTab = (JScrollPane) tabBar.getComponentAt(i);
+			
+			if(page.equals(componentInTab.getViewport().getComponent(0))) {
+				
+				// Through typecasting, target the text portion of the tab.
+				JPanel tabHeader = (JPanel) tabBar.getTabComponentAt(i);
+				JLabel tabLabel = (JLabel) tabHeader.getComponent(0);
+				
+				/* Scrape the HTML content of the web-page to find the content of the 'title' node. */
+				
+				
+				
+				// Now finished, end loop.
+				break;
+				
+			}
+			
+		}
 		
 	}
-	
+
 	/* Accessor methods. */
 	
 	/**

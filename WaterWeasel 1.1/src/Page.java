@@ -2,10 +2,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.ListIterator;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.JEditorPane;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -31,6 +34,11 @@ public class Page implements HyperlinkListener {
 	// Main component to be styled and modified.
 	private JEditorPane page;
 	
+	/* 
+	 * I chose to utilise a list and an accompanying iterator as opposed two 'stack' data-structures to 
+	 * manage the session history to simplify the code but still provide the same functionality.
+	 */
+	
 	// List of the page's visited URLs.
 	private List<URL> visited = new ArrayList<URL>();
 	// Iterator for list navigation.
@@ -55,6 +63,25 @@ public class Page implements HyperlinkListener {
 		page.setContentType("text/html");
 		// Ensure it is not editable.
 		page.setEditable(false);
+		/*
+		 * Add a change listener from the 'beans' library to inform other GUI elements of when
+		 * the asynchronous 'JEditorPane' 'setPage' method has finished loading the page- this is
+		 * all still written by me, there's just no such functionality provided by vanilla 'Swing'!
+		 */
+		page.addPropertyChangeListener(new PropertyChangeListener() {
+
+			@Override
+			public void propertyChange(PropertyChangeEvent e) {
+				
+				if (e.getPropertyName().equals("page")) {
+					
+					window.getTabBar().updateTab(page);
+					
+				}
+				
+			}
+			
+		});
 		// Self reference page's implemented listener method.
 		page.addHyperlinkListener(this);
 		// Display the default page.
@@ -299,6 +326,10 @@ public class Page implements HyperlinkListener {
 	 */
 	private void handleException() {
 		
+		// Display a dialog alerting the user of the problem.
+		JOptionPane.showMessageDialog(null, "Invalid URL navigation!\n"
+				+ "You're just trying to break me, aren't you?", "Oops!", JOptionPane.WARNING_MESSAGE);
+		
 	}
 	
 	/* Accessor methods. */
@@ -311,6 +342,17 @@ public class Page implements HyperlinkListener {
 	public JScrollPane getComponent() {
 		
 		return scrollPane;
+	
+	}
+	
+	/**
+	 * Method returns the wrapped component post-initialisation.
+	 * 
+	 * @return	Page component displaying a website.
+	 */
+	public JEditorPane getInnerComponent() {
+		
+		return page;
 	
 	}
 	

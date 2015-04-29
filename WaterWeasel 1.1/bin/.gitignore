@@ -4,7 +4,7 @@
 /Browser.class
 /CustomButton.class
 /Driver.class
-/Mediator.class
+/FileMediator.class
 /Page.class
 /Ribbon$1.class
 /Ribbon$10.class
@@ -17,7 +17,11 @@
 /Ribbon$8.class
 /Ribbon$9.class
 /Ribbon.class
+/SearchBar$1.class
 /SearchBar$2.class
-/FileMediator.class
-/UserSettings/
+/SearchBar.class
+/TabBar$1.class
+/TabBar$2.class
+/TabBar.class
 /Window$1.class
+/Window.class

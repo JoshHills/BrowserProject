@@ -45,8 +45,11 @@ public class BookmarkBar {
 		
 		// Initialise panel.
 		bookmarkBar = new JPanel();
-		bookmarkBar.setMinimumSize(new Dimension(50, 0));
 		
+		// Make it transparent.
+		bookmarkBar.setOpaque(false);
+		
+		// Initialise it with pre-existing bookmarks.
 		initBookmarkBar();		
 				
 	}
@@ -56,6 +59,7 @@ public class BookmarkBar {
 		// For every bookmark that the browser has stored...
 		for(int i = 0; i < Browser.getInstance().getBookmarks().size(); i++) {
 			
+			// Display each graphically.
 			addBookmark(Browser.getInstance().getBookmarks().get(i));
 			
 		}
@@ -71,7 +75,8 @@ public class BookmarkBar {
 	 */
 	private void addBookmark(Bookmark bookmark) {
 		
-		// Create a new button to perform operations upon.
+		/* Create a new button to perform operations upon. */
+		
 		JButton bookmarkButton = new JButton();
 		// Give it an icon.
 		bookmarkButton.setIcon(bookmark.getIcon());
@@ -92,8 +97,34 @@ public class BookmarkBar {
 
 		});
 		
+		/* Add a method of removing the bookmark. */
+		
+		JPopupMenu bookmarkMenu = new JPopupMenu();
+		JMenuItem deleteBookmark = new JMenuItem("Delete");
+		deleteBookmark.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				// Remove the bookmark from display.
+				bookmarkBar.remove(bookmarkButton);
+				
+				// Update the GUI.
+				bookmarkBar.revalidate();
+				
+				// Remove the bookmark from storage.
+				Browser.getInstance().getBookmarks().remove(bookmark);
+				
+			}
+			
+		});
+		bookmarkMenu.add(deleteBookmark);
+		bookmarkButton.setComponentPopupMenu(bookmarkMenu);
+		
+		// Add the bookmark to the bar.
 		bookmarkBar.add(bookmarkButton);
 		
+		// Update the GUI.
 		bookmarkBar.revalidate();
 		
 	}
@@ -121,6 +152,8 @@ public class BookmarkBar {
 		// Set its size.
 		bookmarkForm.setMinimumSize(new Dimension(300,200));
 		bookmarkForm.setResizable(false);
+		// Centre its position.
+		bookmarkForm.setLocationRelativeTo(null);
 		// Set its layout.
 		bookmarkForm.setLayout(new BoxLayout(bookmarkForm.getContentPane(), BoxLayout.Y_AXIS));
 		
@@ -210,6 +243,9 @@ public class BookmarkBar {
 					// Create a bookmark using the user's selected fields.
 					Bookmark thisBm = new Bookmark((Icon) iconBox.getSelectedItem(),
 							name.getText(), Browser.makeURL(address.getText()));
+					
+					// Add the new bookmark.
+					addBookmark(thisBm);
 					
 					// Add it to the list of bookmarks.
 					Browser.getInstance().getBookmarks().add(thisBm);

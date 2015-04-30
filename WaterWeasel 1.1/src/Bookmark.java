@@ -9,6 +9,7 @@ import javax.swing.Icon;
  */
 public class Bookmark implements java.io.Serializable {
 
+	// Allow writing of Bookmark object to text file.
 	private static final long serialVersionUID = -3741349136919119946L;
 	
 	// Custom icon.
@@ -35,28 +36,25 @@ public class Bookmark implements java.io.Serializable {
 	
 	/* Accessor methods. */
 	
+	/**
+	 * @return	The graphic associated with the bookmark.
+	 */
 	public Icon getIcon() {
 		return ico;
 	}
 	
-	public void setIcon(Icon ico) {
-		this.ico = ico;
-	}
-	
+	/**
+	 * @return	The human-readable name of the bookmark.
+	 */
 	public String getName() {
 		return name;
 	}
 	
-	public void setName(String name) {
-		this.name = name;
-	}
-	
+	/**
+	 * @return	The saved URL that the bookmark points to.
+	 */
 	public URL getURL() {
 		return url;
 	}
-	
-	public void setURL(URL url) {
-		this.url = url;
-	}
-	
+
 }

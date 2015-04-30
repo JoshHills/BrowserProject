@@ -37,7 +37,7 @@ public class Ribbon {
 	private SearchBar searchBar;
 	
 	// Options menu.
-	
+	private JPopupMenu optsMenu;
 	
 	/**
 	 * Constructor sets-up the ribbon tool-bar by creating and compiling relevant components.
@@ -54,9 +54,9 @@ public class Ribbon {
 		bl = new BoxLayout(ribbon, BoxLayout.LINE_AXIS);
 		// Set the ribbon's layout manager.
 		ribbon.setLayout(bl);
-		
+		// Give the ribbon some padding.
 		ribbon.setBorder(new EmptyBorder(5,5,5,5));
-		
+		// Make it transparent.
 		ribbon.setOpaque(false);
 		
 		/* Logo (about) button. */
@@ -179,7 +179,7 @@ public class Ribbon {
 		ribbon.add(homeBtn);
 		
 		// Create a pop-up menu.
-		JPopupMenu optsMenu = new JPopupMenu();
+		optsMenu = new JPopupMenu();
 		
 		/* Add options. */
 		
@@ -267,7 +267,26 @@ public class Ribbon {
 		// Set its mnemonic.
 		showhideBookmarks.setMnemonic(KeyEvent.VK_B);
 		// Add its action listener- if clicked...
-		
+		showhideBookmarks.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				// Toggle visibility of bookmarks bar.
+				if(window.getBmBar().getComponent().isVisible()) {
+					
+					window.getBmBar().getComponent().setVisible(false);
+					
+				}
+				else {
+					
+					window.getBmBar().getComponent().setVisible(true);
+					
+				}
+				
+			}
+			
+		});
 		// Add it to the menu.
 		optsMenu.add(showhideBookmarks);
 		
@@ -279,7 +298,17 @@ public class Ribbon {
 		// Set its mnemonic.
 		viewHistory.setMnemonic(KeyEvent.VK_H);
 		// Add its action listener- if clicked...
-		
+		viewHistory.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				// Open a window displaying the user's history.
+				window.showHistory();
+				
+			}
+			
+		});
 		// Add it to the menu.
 		optsMenu.add(viewHistory);
 		

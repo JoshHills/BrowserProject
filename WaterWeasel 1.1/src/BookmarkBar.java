@@ -223,7 +223,7 @@ public class BookmarkBar {
 				/* User form information to build a bookmark! */
 				
 				// If any of the fields are blank...
-				if(name.getText() == null || address.getText() == null) {
+				if(name.getText().equals("") || address.getText().equals("")) {
 					
 					// Display a dialog alerting the user of the problem.
 					JOptionPane.showMessageDialog(null, "One or more fields not set!\n"

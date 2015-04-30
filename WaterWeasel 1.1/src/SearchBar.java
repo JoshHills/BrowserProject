@@ -1,6 +1,9 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -37,7 +40,10 @@ public class SearchBar {
 		/* Create search bar with components. */
 		
 		// Initialise panel.
-		searchBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		searchBar = new JPanel();
+		// Give it a layout manager.
+		searchBar.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();		
 		// Give it a background colour.
 		searchBar.setBackground(Color.WHITE);
 		// Give it a border.
@@ -46,15 +52,20 @@ public class SearchBar {
 		/* Predictive box. */
 		
 		// Create a predictive text field for user-direction.
-		predictiveField = new JTextField("Enter:");
+		predictiveField = new JTextField("  Enter:");
 		// Set the preferred size of the text-box.
-		predictiveField.setPreferredSize(new Dimension(45,20));
+		predictiveField.setPreferredSize(new Dimension(55,20));
+		predictiveField.setMinimumSize(new Dimension(55,20));
 		// Remove border.
 		predictiveField.setBorder(null);
 		// Ensure it is not editable.
 		predictiveField.setEditable(false);
-		// Add it to the search-bar.
-		searchBar.add(predictiveField);
+		// Adjust its restraints and add it to the search-bar.
+		c.gridx = 0;
+		c.gridy = 0;
+		c.weightx = 0;
+		c.anchor = GridBagConstraints.FIRST_LINE_START;
+		searchBar.add(predictiveField, c);
 		
 		/* Address box. */
 		
@@ -107,23 +118,27 @@ public class SearchBar {
 				
 				// If the address field is empty, tell the user to enter something.
 				if(addressField.getText().equals("")) {
-					predictiveField.setText("Enter:");
+					predictiveField.setText("  Enter:");
 				}
 				// If the address field looks like a link, tell the user to go.
 				else if(addressField.getText().contains("://") ||
 					addressField.getText().contains("www.")) {
-					predictiveField.setText("Go to:");
+					predictiveField.setText("  Go to:");
 				}
 				// Otherwise, tell the user the string will be searched for.
 				else {
-					predictiveField.setText("Search:");
+					predictiveField.setText("  Search:");
 				}
 				
 			}
 			
 		});
-		// Add it to the search-bar.
-		searchBar.add(addressField);
+		// Adjust its restraints and add it to the search-bar.
+		c.gridx = 1;
+		c.gridy = 0;
+		c.weightx = 1;
+		c.fill = GridBagConstraints.BOTH;
+		searchBar.add(addressField, c);
 		
 	}
 	

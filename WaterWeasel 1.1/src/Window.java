@@ -1,5 +1,9 @@
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -11,10 +15,12 @@ import java.util.SortedMap;
 import java.net.URL;
 import java.util.Date;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 /**
  * @author Josh Hills
@@ -71,6 +77,8 @@ public class Window {
 		});
 		// Set the window's initial size.
 		frame.setSize(Browser.getInstance().getXSize(), Browser.getInstance().getYSize());
+		// Set the window's minimum size.
+		frame.setMinimumSize(new Dimension(500,200));
 		// Set the window's initial position.
 		frame.setLocation(Browser.getInstance().getXPosition(), Browser.getInstance().getYPosition());
 		// Set the window's initial extended state.
@@ -140,6 +148,42 @@ public class Window {
 		
 		// Create a panel to store history.
 		JPanel historyPanel = new JPanel();
+		// Give it a non-default layout manager.
+		historyPanel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.FIRST_LINE_START;
+		c.insets = new Insets(5,5,5,5);
+		c.gridx = 0;
+		c.gridy = GridBagConstraints.RELATIVE;
+		c.weighty = 1;
+		c.weightx = 0.5;
+		c.fill = GridBagConstraints.NONE;
+		// Wrap it in a scrollpane.
+		JScrollPane historyScroll = new JScrollPane(historyPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
+		// Add a button to clear all history.
+		JButton clear = new JButton("Clear All History");
+		// Add an action listener- if clicked...
+		clear.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				// Remove all components from the history panel.
+				historyPanel.removeAll();
+				history.revalidate();
+				history.repaint();
+				
+				// Remove all stored history.
+				Browser.getInstance().getHistory().clear();
+				
+			}
+			
+		});
+		// Add it to the panel.
+		historyPanel.add(clear, c);
+		c.insets = new Insets(0,0,0,0);
 		
 		// Iterate over history storage, adding them graphically to the panel. For each...
 		for(SortedMap.Entry<Date, URL> entry : Browser.getInstance().getHistory().entrySet()) {
@@ -173,12 +217,13 @@ public class Window {
 			historyItem.add(new JLabel("Date Visited: " + entry.getKey().toString()
 					+ " URL: " + entry.getValue().toString()));
 			
-			historyPanel.add(historyItem);
+			// Add the label to the window.
+			historyPanel.add(historyItem, c);
 			
 		}
 		
 		// Add the panel to the window.
-		history.add(historyPanel);
+		history.add(historyScroll);
 		
 		// Display the window.
 		history.setVisible(true);

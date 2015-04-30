@@ -1,9 +1,11 @@
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -65,6 +67,8 @@ public class Ribbon {
 		logoBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/LogoBtn/placeholder.png"));
 		// Add it to the ribbon.
 		ribbon.add(logoBtn);
+		// Add some spacing.
+		ribbon.add(Box.createRigidArea(new Dimension(5,0)));
 		
 		/* Back button. */
 		
@@ -108,7 +112,9 @@ public class Ribbon {
 			
 		});
 		// Add it to the ribbon.
-		ribbon.add(forwardBtn);	
+		ribbon.add(forwardBtn);
+		// Add some spacing.
+		ribbon.add(Box.createRigidArea(new Dimension(5,0)));
 		
 		/* Refresh button. */
 		
@@ -129,6 +135,8 @@ public class Ribbon {
 		});
 		// Add it to the ribbon.
 		ribbon.add(refreshBtn);
+		// Add some spacing.
+		ribbon.add(Box.createRigidArea(new Dimension(5,0)));
 		
 		/* Search bar. */
 		
@@ -136,6 +144,8 @@ public class Ribbon {
 		searchBar = new SearchBar(window);
 		// Add it to the ribbon.
 		ribbon.add(searchBar.getComponent());
+		// Add some spacing.
+		ribbon.add(Box.createRigidArea(new Dimension(5,0)));
 		
 		/* Go button. */
 		
@@ -154,6 +164,8 @@ public class Ribbon {
 		});
 		// Add it to the ribbon.
 		ribbon.add(goBtn);
+		// Add some spacing.
+		ribbon.add(Box.createRigidArea(new Dimension(5,0)));
 		
 		/* Home button. */
 		
@@ -177,6 +189,8 @@ public class Ribbon {
 		});
 		// Add it to the ribbon.
 		ribbon.add(homeBtn);
+		// Add some spacing.
+		ribbon.add(Box.createRigidArea(new Dimension(5,0)));
 		
 		// Create a pop-up menu.
 		optsMenu = new JPopupMenu();

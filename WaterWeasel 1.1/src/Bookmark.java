@@ -7,8 +7,10 @@ import javax.swing.Icon;
  * 
  * Class models a browser 'bookmark' with a graphic, name, and link.
  */
-public class Bookmark {
+public class Bookmark implements java.io.Serializable {
 
+	private static final long serialVersionUID = -3741349136919119946L;
+	
 	// Custom icon.
 	private Icon ico;
 	// User-defined name for identification.

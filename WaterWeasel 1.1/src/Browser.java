@@ -282,10 +282,12 @@ public class Browser {
 		// Attempt to save the bookmarks collection.
 		try {
 			
+			System.out.println("Trying to save bookmarks!");
 			FileMediator.saveObject(bookmarks, BOOKMARKS_FILE_PATH);
 			
 		} catch (IOException e) {
 			
+			System.out.println("oh shit!");
 			// Log that something bad happened!
 			somethingWrong = true;
 			
@@ -400,8 +402,8 @@ public class Browser {
 	 * @return			A new URL object if successful.
 	 */
 	public static URL makeURL(String url) {
-		
-		
+
+		// TODO: some checking
 		
 		try {
 			

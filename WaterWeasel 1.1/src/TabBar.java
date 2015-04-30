@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -107,7 +108,9 @@ public class TabBar {
 		/* Tab title. */
 		
 		// Add a temporary title to be updated by the change listener applied to the page.
-		tabPanel.add(new JLabel("Loading..."));
+		JLabel title = new JLabel("Loading...");
+		title.setPreferredSize(new Dimension(120,15));
+		tabPanel.add(title);
 		
 		/* Close button. */
 		
@@ -187,9 +190,19 @@ public class TabBar {
 				JPanel tabHeader = (JPanel) tabBar.getTabComponentAt(i);
 				JLabel tabLabel = (JLabel) tabHeader.getComponent(0);
 				
-				/* Scrape the HTML content of the web-page to find the content of the 'title' node. */
-				
-				
+				// Scrape the HTML content of the web-page to find the content of the 'title' node.
+				if(page.getDocument().getProperty("title") != null) {
+					
+					// If there was one, set the tab title to the webpage title.
+					tabLabel.setText((String) page.getDocument().getProperty("title"));
+					
+				}
+				else {
+					
+					// Otherwise, set the tab title to the webpage address.
+					tabLabel.setText(page.getPage().toString());
+					
+				}
 				
 				// Now finished, end loop.
 				break;

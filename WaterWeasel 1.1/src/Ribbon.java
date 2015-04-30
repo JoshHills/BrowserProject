@@ -178,8 +178,6 @@ public class Ribbon {
 		// Add it to the ribbon.
 		ribbon.add(homeBtn);
 		
-		/* Options Menu. */
-		
 		// Create a pop-up menu.
 		JPopupMenu optsMenu = new JPopupMenu();
 		
@@ -256,7 +254,7 @@ public class Ribbon {
 			public void actionPerformed(ActionEvent e) {
 				
 				// Open the form to create a new bookmark.
-				Browser.getInstance().getBmManager().displayBookmarkForm();
+				window.getBmBar().initBookmarkForm();
 				
 			}
 			
@@ -264,17 +262,37 @@ public class Ribbon {
 		// Add it to the menu.
 		optsMenu.add(addBookmark);
 		
+		// Create an option to toggle the bookmarks bar.
+		JMenuItem showhideBookmarks = new JMenuItem("Show/Hide Bookmarks Bar");
+		// Set its mnemonic.
+		showhideBookmarks.setMnemonic(KeyEvent.VK_B);
+		// Add its action listener- if clicked...
+		
+		// Add it to the menu.
+		optsMenu.add(showhideBookmarks);
+		
+		// Add another separator to the menu.
+		optsMenu.addSeparator();
+		
+		// Create an option to view the user's browsing history.
+		JMenuItem viewHistory = new JMenuItem("View History");
+		// Set its mnemonic.
+		viewHistory.setMnemonic(KeyEvent.VK_H);
+		// Add its action listener- if clicked...
+		
+		// Add it to the menu.
+		optsMenu.add(viewHistory);
+		
 		// Create an 'options' button.
 		optsBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/OptsBtn/placeholder.png"));
 		// Add an action listener- if clicked...
 		optsBtn.addActionListener(new ActionListener() {
 
 			/**
-			 * This method handles the displaying of the pop-up settings
-			 * menu upon clicking the options button.
-			 * 
-			 * @Override
+			 * This method handles the displaying and positioning of the
+			 * pop-up settings menu upon clicking the options button.
 			 */
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				
 				// Get the source component of the event.

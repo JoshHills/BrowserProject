@@ -80,12 +80,18 @@ public class Window {
 		// Add ribbon to window.
 		frame.add(ribbon.getComponent(), BorderLayout.NORTH);
 		
+		// Create bookmarks bar.
+		bmBar = new BookmarkBar(this);
+		// Add bookmark bar to window.
+		frame.add(bmBar.getComponent(), BorderLayout.EAST);
+		
 		// Create tab bar (manages tabs and pages).
 		tabBar = new TabBar(this);
 		// Add tab bar to window.
-		frame.add(tabBar.getComponent());				
+		frame.add(tabBar.getComponent());	
 		
 		// Add the keyboard shortcut listener.
+		// TODO: window shortcuts
 		
 		// Make the window visible post-initialisation.
 		frame.setVisible(true);
@@ -123,17 +129,6 @@ public class Window {
 	}
 	
 	/**
-	 * Method returns the tab bar component.
-	 * 
-	 * @return	This window's 'TabBar' instance.
-	 */
-	public TabBar getTabBar() {
-		
-		return tabBar;
-	
-	}
-	
-	/**
 	 * Method returns the ribbon component.
 	 * 
 	 * @return	This window's 'Ribbon' instance.
@@ -142,6 +137,28 @@ public class Window {
 		
 		return ribbon;
 		
+	}
+	
+	/**
+	 * Method returns the bookmark bar component.
+	 * 
+	 * @return	This window's bookmark bar.
+	 */
+	public BookmarkBar getBmBar() {
+		
+		return bmBar;
+		
+	}
+	
+	/**
+	 * Method returns the tab bar component.
+	 * 
+	 * @return	This window's 'TabBar' instance.
+	 */
+	public TabBar getTabBar() {
+		
+		return tabBar;
+	
 	}
 	
 	/**

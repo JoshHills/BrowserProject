@@ -145,6 +145,8 @@ public class SearchBar {
 		// Else search for the string.
 		else {
 			
+			// TODO: search for thing
+			
 		}
 		
 	}

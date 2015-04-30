@@ -11,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
@@ -64,7 +65,7 @@ public class Ribbon {
 		/* Logo (about) button. */
 		
 		// Create the logo button.
-		logoBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/LogoBtn/placeholder.png"));
+		logoBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/LogoBtn/logo.png"));
 		// Add it to the ribbon.
 		ribbon.add(logoBtn);
 		// Add some spacing.
@@ -73,7 +74,10 @@ public class Ribbon {
 		/* Back button. */
 		
 		// Create a 'back' button.
-		backBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/BackBtn/placeholder.png"));
+		backBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/BackBtn/BackBtn.png"),
+				new ImageIcon("./Assets/ButtonIcons/BackBtn/BackBtnOver.png"),
+				new ImageIcon("./Assets/ButtonIcons/BackBtn/BackBtnDn.png"),
+				new ImageIcon("./Assets/ButtonIcons/BackBtn/BackBtnDisabled.png"));
 		// Add an action listener- if clicked...
 		backBtn.addActionListener(new ActionListener() {
 
@@ -95,7 +99,10 @@ public class Ribbon {
 		/* Forward button. */
 		
 		// Create a 'forward' button.
-		forwardBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/ForwardBtn/placeholder.png"));
+		forwardBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/ForwardBtn/ForwardBtn.png"),
+				new ImageIcon("./Assets/ButtonIcons/ForwardBtn/ForwardBtnOver.png"),
+				new ImageIcon("./Assets/ButtonIcons/ForwardBtn/ForwardBtnDn.png"),
+				new ImageIcon("./Assets/ButtonIcons/ForwardBtn/ForwardBtnDisabled.png"));
 		// Add an action listener- if clicked...
 		forwardBtn.addActionListener(new ActionListener() {
 
@@ -119,7 +126,9 @@ public class Ribbon {
 		/* Refresh button. */
 		
 		// Create a 'refresh' button.
-		refreshBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/RefreshBtn/placeholder.png"));
+		refreshBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/RefreshBtn/RefreshBtn.png"),
+				new ImageIcon("./Assets/ButtonIcons/RefreshBtn/RefreshBtnOver.png"),
+				new ImageIcon("./Assets/ButtonIcons/RefreshBtn/RefreshBtnDn.png"));
 		// Add an action listener- if clicked...
 		refreshBtn.addActionListener(new ActionListener() {
 			
@@ -150,7 +159,9 @@ public class Ribbon {
 		/* Go button. */
 		
 		// Create a 'go' button.
-		goBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/GoBtn/placeholder.png"));
+		goBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/GoBtn/GoBtn.png"),
+				new ImageIcon("./Assets/ButtonIcons/GoBtn/GoBtnOver.png"),
+				new ImageIcon("./Assets/ButtonIcons/GoBtn/GoBtnDn.png"));
 		// Add an action listener- if clicked...
 		goBtn.addActionListener(new ActionListener() {
 
@@ -170,7 +181,9 @@ public class Ribbon {
 		/* Home button. */
 		
 		// Create a 'home' button.
-		homeBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/HomeBtn/placeholder.png"));
+		homeBtn = CustomButton.createButton(new ImageIcon("./Assets/ButtonIcons/HomeBtn/HomeBtn.png"),
+				new ImageIcon("./Assets/ButtonIcons/HomeBtn/HomeBtnOver.png"),
+				new ImageIcon("./Assets/ButtonIcons/HomeBtn/HomeBtnDn.png"));
 		// Add an action listener- if clicked...
 		homeBtn.addActionListener(new ActionListener() {
 
@@ -257,6 +270,37 @@ public class Ribbon {
 		// Add a separator to the menu.
 		optsMenu.addSeparator();
 		
+		// Add an option for the user to change their homepage.
+		JMenuItem changeHomepage = new JMenuItem("Change Homepage");
+		// Set it's mnemonic.
+		changeHomepage.setMnemonic(KeyEvent.VK_C);
+		// Add its action listener- if clicked...
+		changeHomepage.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				// Display a form to enter a new homepage.
+				String newHomepage = JOptionPane.showInputDialog(
+						"Enter a new homepage:", Browser.getInstance().getHomepage());
+				
+				// If the homepage validates...
+				if(Browser.makeURL(newHomepage) != null) {
+					
+					// Set the homepage to the new page.
+					Browser.getInstance().setHomepage(Browser.makeURL(newHomepage));
+					
+				}
+				
+			}
+			
+		});
+		// Add it to the window.
+		optsMenu.add(changeHomepage);
+		
+		// Add a separator to the menu.
+		optsMenu.addSeparator();
+		
 		// Create a new bookmark item.
 		JMenuItem addBookmark = new JMenuItem("Add Bookmark");
 		// Set it's mnemonic.
@@ -290,11 +334,21 @@ public class Ribbon {
 				if(window.getBmBar().getComponent().isVisible()) {
 					
 					window.getBmBar().getComponent().setVisible(false);
+					window.getComponent().revalidate();
+					window.getComponent().repaint();
+					
+					// Log user preference.
+					Browser.getInstance().setBmsVisible(false);
 					
 				}
 				else {
 					
 					window.getBmBar().getComponent().setVisible(true);
+					window.getComponent().revalidate();
+					window.getComponent().repaint();
+					
+					// Log user preference.
+					Browser.getInstance().setBmsVisible(true);
 					
 				}
 				
@@ -306,6 +360,8 @@ public class Ribbon {
 		
 		// Add another separator to the menu.
 		optsMenu.addSeparator();
+		
+		// Create an option to change the user's homepage.
 		
 		// Create an option to view the user's browsing history.
 		JMenuItem viewHistory = new JMenuItem("View History");

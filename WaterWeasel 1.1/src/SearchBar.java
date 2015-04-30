@@ -157,12 +157,6 @@ public class SearchBar {
 							Browser.makeURL(addressField.getText()));
 			
 		}
-		// Else search for the string.
-		else {
-			
-			// TODO: search for thing
-			
-		}
 		
 	}
 	

@@ -78,7 +78,7 @@ public class Window {
 		// Set the window's initial size.
 		frame.setSize(Browser.getInstance().getXSize(), Browser.getInstance().getYSize());
 		// Set the window's minimum size.
-		frame.setMinimumSize(new Dimension(500,200));
+		frame.setMinimumSize(new Dimension(500,300));
 		// Set the window's initial position.
 		frame.setLocation(Browser.getInstance().getXPosition(), Browser.getInstance().getYPosition());
 		// Set the window's initial extended state.
@@ -86,29 +86,45 @@ public class Window {
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		}
 		// Set the window's initial theme.
-		frame.getContentPane().setBackground(Browser.getInstance().getTheme());
+		frame.getContentPane().setBackground(Browser.getInstance().getDEFAULT_THEME());
 		
-		// Create layout.
-		bl = new BorderLayout();
-		// Set layout.
-		frame.setLayout(bl);
+		// Add a layout manager.
+		frame.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.weightx = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		
 		/* Create child components and add them. */
 		
 		// Create ribbon (utility tool-bar).
 		ribbon = new Ribbon(this);
-		// Add ribbon to window.
-		frame.add(ribbon.getComponent(), BorderLayout.NORTH);
+		// Adjust its constraints and add ribbon to the window.
+		c.gridx = 0;
+		c.gridy = 0;
+		c.weighty = 0;
+		frame.add(ribbon.getComponent(), c);
 		
 		// Create bookmarks bar.
 		bmBar = new BookmarkBar(this);
-		// Add bookmark bar to window.
-		frame.add(bmBar.getComponent(), BorderLayout.EAST);
+		// Adjust its constraints and add bookmark bar to window.
+		c.gridx = 0;
+		c.gridy = 1;
+		c.weighty = 0;
+		frame.add(bmBar.getComponent(), c);
+		// Change visibility dependent on user setting.
+		if(!Browser.getInstance().isBmsVisible()) {
+			bmBar.getComponent().setVisible(false);
+		}
 		
 		// Create tab bar (manages tabs and pages).
 		tabBar = new TabBar(this);
-		// Add tab bar to window.
-		frame.add(tabBar.getComponent());
+		// Adjust its constraints and add tab bar to window.
+		c.gridx = 0;
+		c.gridy = 3;
+		c.weighty = 1;
+		c.fill = GridBagConstraints.BOTH;
+		frame.add(tabBar.getComponent(), c);
 		
 		// Add the keyboard shortcut listener.
 		// TODO: window shortcuts

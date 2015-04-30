@@ -39,14 +39,16 @@ public class Browser {
 	
 	// Paths to settings files.
 	final static String SETTINGS_FILE_PATH = "Assets/UserSettings/settings.cfg";
-	private final String HISTORY_FILE_PATH = "Assets/UserSettings/history.txt";
-	private final String BOOKMARKS_FILE_PATH = "Assets/UserSettings/bookmarks.txt";
+	private final String HISTORY_FILE_PATH = "Assets/UserSettings/history.ser";
+	private final String BOOKMARKS_FILE_PATH = "Assets/UserSettings/bookmarks.ser";
 	// Initial window size.
 	private final int DEFAULT_SIZE = 500;
 	// State of window locking.
 	private final boolean DEFAULT_MAXIMISED = true;
+	// Visibility of the bookmarks bar on-load.
+	private final boolean DEFAULT_BOOKMARKSVISIBLE = true;
 	// Overall browser theme.
-	private final Color DEFAULT_THEME = new Color(140,210,245);
+	private final Color DEFAULT_THEME = new Color(130,180,200);
 	// Incognito theme.
 	private final Color DEFAULT_PRIVATE_THEME = new Color(95,70,100);
 	// 'Homepage' loaded to first page.
@@ -58,10 +60,10 @@ public class Browser {
 	private int xSize, ySize;
 	// Saved user initial window position.
 	private int xPos, yPos;
+	// Saved user visibility of bookmarks bar.
+	private boolean bmsVisible;
 	// Saved user state of window locking.
 	private boolean maximised;
-	// Saved user overall browser theme.
-	private Color theme;
 	// Saved user 'homepage' loaded to first page.
 	private URL homepage;
 	
@@ -163,10 +165,10 @@ public class Browser {
 					Integer.parseInt(FileMediator.getProperty("left", settingsFile)) : 0;
 			yPos 		= FileMediator.getProperty("top", settingsFile) != null ? 
 					Integer.parseInt(FileMediator.getProperty("top", settingsFile)) : 0;
+			bmsVisible 	= FileMediator.getProperty("bookmarks", settingsFile) != null ?
+					Boolean.parseBoolean(FileMediator.getProperty("bookmarks", settingsFile)) : DEFAULT_BOOKMARKSVISIBLE;
 			maximised 	= FileMediator.getProperty("fullscreen", settingsFile) != null ?
 							Boolean.parseBoolean(FileMediator.getProperty("fullscreen", settingsFile)) : DEFAULT_MAXIMISED;
-			theme		= FileMediator.getProperty("theme", settingsFile) != null ?
-							new Color(Integer.parseInt(FileMediator.getProperty("theme", settingsFile))) : DEFAULT_THEME;
 			homepage	= FileMediator.getProperty("homepage", settingsFile) != null ?
 							makeURL(FileMediator.getProperty("homepage", settingsFile)) : DEFAULT_HOMEPAGE;
 		
@@ -244,8 +246,8 @@ public class Browser {
 			FileMediator.setProperty("height", ySize, settingsFile);
 			FileMediator.setProperty("left", xPos, settingsFile);
 			FileMediator.setProperty("top", yPos, settingsFile);
+			FileMediator.setProperty("bookmarks", bmsVisible, settingsFile);
 			FileMediator.setProperty("fullscreen", maximised, settingsFile);
-			FileMediator.setProperty("theme", theme.getRGB(), settingsFile);
 			FileMediator.setProperty("homepage", homepage, settingsFile);
 		
 		} catch(IOException e) {
@@ -273,8 +275,7 @@ public class Browser {
 		
 		// Attempt to save the bookmarks collection.
 		try {
-			
-			System.out.println("Trying to save bookmarks!");
+
 			FileMediator.saveObject(bookmarks, BOOKMARKS_FILE_PATH);
 			
 		} catch (IOException e) {
@@ -296,7 +297,8 @@ public class Browser {
 	}
 	
 	/**
-	 * 
+	 * Method handles the shut-down of a window (saves
+	 * variables pertaining to the state of the window).
 	 */
 	public void close(JFrame frame) {
 			
@@ -362,8 +364,8 @@ public class Browser {
 			FileMediator.setProperty("height", DEFAULT_SIZE, settingsFile);
 			FileMediator.setProperty("left", 0, settingsFile);
 			FileMediator.setProperty("top", 0, settingsFile);
+			FileMediator.setProperty("bookmarks", DEFAULT_BOOKMARKSVISIBLE, settingsFile);
 			FileMediator.setProperty("fullscreen", DEFAULT_MAXIMISED, settingsFile);
-			FileMediator.setProperty("theme", DEFAULT_THEME, settingsFile);
 			FileMediator.setProperty("homepage", DEFAULT_HOMEPAGE, settingsFile);
 		
 		} catch (IOException e) {
@@ -395,7 +397,13 @@ public class Browser {
 	 */
 	public static URL makeURL(String url) {
 
-		// TODO: some checking
+		// Preliminary checking to reduce errors.
+		if(!url.contains("http://") && url.contains("www.")) {
+			
+			// Insert protocol at the start of the URL.
+			url = "http://" + url;
+			
+		}
 		
 		try {
 			
@@ -405,6 +413,10 @@ public class Browser {
 		} catch (java.net.MalformedURLException e) {
 			
 			// Otherwise...
+			
+			// Display a dialog alerting the user of the problem.
+			JOptionPane.showMessageDialog(null, "Invalid URL!",
+					"Oops!", JOptionPane.WARNING_MESSAGE);
 			return null;
 		
 		}
@@ -427,8 +439,10 @@ public class Browser {
 			return file.toURI().toURL();
 		
 		} catch (java.net.MalformedURLException e) {
-		
-			// Otherwise...
+			
+			// Otherwise, display a dialog alerting the user of the problem.
+			JOptionPane.showMessageDialog(null, "The file provided could not be displayed in the browser.\n"
+					+ "Please ensure the filepath is correct.", "Oops!", JOptionPane.WARNING_MESSAGE);
 			return null;
 		
 		}
@@ -443,6 +457,10 @@ public class Browser {
 	
 	public URL getDEFAULT_HOMEPAGE() {
 		return DEFAULT_HOMEPAGE;
+	}
+	
+	public Color getDEFAULT_THEME() {
+		return DEFAULT_THEME;
 	}
 	
 	public Color getDEFAULT_PRIVATE_THEME() {
@@ -465,16 +483,24 @@ public class Browser {
 		return yPos;
 	}
 
+	public boolean isBmsVisible() {
+		return bmsVisible;
+	}
+	
+	public void setBmsVisible(boolean bmsVisible) {
+		this.bmsVisible = bmsVisible;
+	}
+	
 	public boolean isMaximised() {
 		return maximised;
 	}
-
-	public Color getTheme() {
-		return theme;
-	}
-
+	
 	public URL getHomepage() {
 		return homepage;
+	}
+	
+	public void setHomepage(URL homepage) {
+		this.homepage = homepage;
 	}
 
 	public List<Bookmark> getBookmarks() {

@@ -1,4 +1,5 @@
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -7,6 +8,7 @@ import java.io.File;
 import java.net.URL;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 /**
  * @author Josh Hills
@@ -23,6 +25,9 @@ public class BookmarkBar {
 	
 	// Main component to be styled and modified.
 	private JPanel bookmarkBar;
+	
+	// Wrapper to add scrolling functionality.
+	private JScrollPane bookmarkBarScroll;
 	
 	// Form to display which lets the user create a bookmark.
 	private JFrame bookmarkForm;
@@ -43,18 +48,46 @@ public class BookmarkBar {
 			icons[i] = new ImageIcon(bmIcons[i].getPath());
 		}
 		
-		// Initialise panel.
-		bookmarkBar = new JPanel();
-		
+		// Create panel.
+		bookmarkBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		// Make it transparent.
 		bookmarkBar.setOpaque(false);
 		
 		// Initialise it with pre-existing bookmarks.
-		initBookmarkBar();		
+		initBookmarkBar();
+		
+		// Wrap everything in a scrollable pane.
+		bookmarkBarScroll = new JScrollPane(bookmarkBar, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		// Allow some padding inside to accommodate for dynamically appearing scrollbar.
+		bookmarkBarScroll.setMinimumSize(new Dimension(0,55));
+		// Remove it's styling.
+		bookmarkBarScroll.setBorder(null);
+		bookmarkBarScroll.setOpaque(false);
+		bookmarkBarScroll.getViewport().setOpaque(false);
 				
 	}
 	
 	private void initBookmarkBar() {
+		
+		// Add a button that allows the user to add a bookmark.
+		JButton addBm = new JButton("+");
+		// Add an action listener- if clicked...
+		addBm.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				// Open bookmark creation form.
+				initBookmarkForm();
+				
+			}
+			
+		});
+		// Remove unwanted styling.
+		addBm.setFocusable(false);
+		// Add it to the bar.
+		bookmarkBar.add(addBm);
 		
 		// For every bookmark that the browser has stored...
 		for(int i = 0; i < Browser.getInstance().getBookmarks().size(); i++) {
@@ -96,6 +129,8 @@ public class BookmarkBar {
 			}
 
 		});
+		// Remove unwanted styling.
+		bookmarkButton.setFocusable(false);
 		
 		/* Add a method of removing the bookmark. */
 		
@@ -111,6 +146,7 @@ public class BookmarkBar {
 				
 				// Update the GUI.
 				bookmarkBar.revalidate();
+				bookmarkBar.repaint();
 				
 				// Remove the bookmark from storage.
 				Browser.getInstance().getBookmarks().remove(bookmark);
@@ -271,11 +307,11 @@ public class BookmarkBar {
 	/**
 	 * Method returns the main component post-initialisation.
 	 * 
-	 * @return	JPanel component containing functioning browser bookmarks bar.
+	 * @return	JScrollPane component containing functioning browser bookmarks bar.
 	 */
-	public JPanel getComponent() {
+	public JScrollPane getComponent() {
 		
-		return bookmarkBar;
+		return bookmarkBarScroll;
 		
 	}
 		
